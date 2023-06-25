@@ -17,6 +17,7 @@ export default async function Meetup({ params }: MeetupProps) {
 
   const meetup = await findMeetup(params.meetupId);
 
+  // TODO: implement business rules for date comparison
   const isBeforeEventDate = true;
 
   return (
@@ -49,6 +50,7 @@ export default async function Meetup({ params }: MeetupProps) {
             <div>
               <p className="text-[#333] flex items-center gap-2">
                 <MdDateRange size={18} color="#e65175" />
+                // TODO: implement date formatting
                 {meetup.date}
               </p>
 

@@ -10,6 +10,7 @@ type DatePickerProps = {
   placeholder: string;
 };
 
+// TODO: improve datepicker styles
 export const DatePicker: React.FC<DatePickerProps> = ({
   name,
   placeholder,

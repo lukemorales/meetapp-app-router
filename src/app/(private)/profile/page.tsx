@@ -13,11 +13,8 @@ export default async function Profile() {
 
   const { user } = session;
 
+  // TODO: implement profile update
   async function updateProfile(formData: FormData) {
-    'use server';
-  }
-
-  async function logout() {
     'use server';
   }
 
