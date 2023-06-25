@@ -2,7 +2,7 @@ import { getCsrfToken } from 'next-auth/react';
 import { cookies } from 'next/headers';
 import Link from 'next/link';
 
-import { Form } from './form';
+import { AuthForm } from './auth-form';
 
 export default async function SignInPage({ params }: any) {
   // somehow needed in the component body
@@ -10,7 +10,7 @@ export default async function SignInPage({ params }: any) {
   cookies();
 
   return (
-    <Form>
+    <AuthForm>
       <input
         name="csrfToken"
         type="hidden"
@@ -26,6 +26,6 @@ export default async function SignInPage({ params }: any) {
           Criar uma conta
         </Link>
       </p>
-    </Form>
+    </AuthForm>
   );
 }

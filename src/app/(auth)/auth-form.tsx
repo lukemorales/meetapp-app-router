@@ -2,22 +2,24 @@
 
 import { FormSubmitButton } from '@/components';
 import { signIn } from 'next-auth/react';
+import { FormEvent } from 'react';
 
-export const Form: React.FC<React.PropsWithChildren> = ({ children }) => {
+export const AuthForm: React.FC<React.PropsWithChildren> = ({ children }) => {
+  function handleSubmit(e: FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+
+    const formData = new FormData(e.currentTarget);
+
+    signIn('credentials', {
+      email: formData.get('email'),
+      password: formData.get('password'),
+    });
+  }
+
   return (
     <form
       className="flex flex-col mt-10 relative z-20 gap-3"
-      onSubmit={(e) => {
-        e.preventDefault();
-
-        const formData = new FormData(e.currentTarget);
-        console.log(formData.get('email'));
-
-        signIn('credentials', {
-          email: formData.get('email'),
-          password: formData.get('password'),
-        });
-      }}
+      onSubmit={handleSubmit}
     >
       <input
         required
