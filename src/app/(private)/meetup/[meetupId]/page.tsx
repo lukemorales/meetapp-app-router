@@ -31,7 +31,7 @@ export default async function Meetup({ params }: MeetupProps) {
           <nav className="flex">
             <Link
               className="rounded py-2 px-3 flex items-center font-bold text-white bg-[#4dbaf9] gap-1"
-              href={`/meetups/${params.meetupId}/edit`}
+              href={`/meetup/${params.meetupId}/edit`}
             >
               <MdEdit size={16} color="#fff" />
               Edit

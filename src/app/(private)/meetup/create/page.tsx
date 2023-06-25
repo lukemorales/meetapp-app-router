@@ -34,7 +34,7 @@ export default async function CreateMeetup() {
     });
 
     revalidatePath('/dashboard');
-    redirect(`/meetups/${meetup.id}`);
+    redirect(`/meetup/${meetup.id}`);
   }
 
   return (

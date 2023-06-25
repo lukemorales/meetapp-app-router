@@ -29,7 +29,7 @@ export default async function Dashboard() {
 
         <Link
           className="bg-[#f94d6a] rounded py-2 px-3 flex items-center gap-2 font-bold tracking-[0.5px] text-white"
-          href="/meetups/create"
+          href="/meetup/create"
         >
           <MdAddCircleOutline color="#fff" size={22} />
           Novo Meetup
@@ -46,7 +46,7 @@ export default async function Dashboard() {
           <ul className="flex flex-col gap-3">
             {meetups.map((meetup) => (
               <Link
-                href={`/meetups/${meetup.id}`}
+                href={`/meetup/${meetup.id}`}
                 key={meetup.id}
                 className={clsx(
                   'flex justify-between items-center w-full p-5 rounded bg-black/10 text-white',

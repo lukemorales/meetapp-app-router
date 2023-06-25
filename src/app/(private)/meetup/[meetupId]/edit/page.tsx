@@ -28,7 +28,7 @@ export default async function EditMeetup({ params }: EditMeetupProps) {
   async function update(formData: FormData) {
     'use server';
 
-    redirect(`/meetups/${meetup.id}`);
+    redirect(`/meetup/${meetup.id}`);
   }
 
   async function cancelMeetup(_formData: FormData) {
