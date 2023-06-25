@@ -28,9 +28,6 @@ export default async function Meetup({ params }: MeetupProps) {
 
   const meetup = await findMeetup(params.meetupId);
 
-  // TODO: implement business rules for date comparison
-  const isBeforeEventDate = true;
-
   return (
     <div>
       <header className="w-full flex justify-between items-center mb-10">
@@ -38,7 +35,7 @@ export default async function Meetup({ params }: MeetupProps) {
           {meetup.title}
         </h2>
 
-        {meetup.organizerId === session?.user.id && isBeforeEventDate && (
+        {meetup.organizerId === session?.user.id && !meetup.hasPast && (
           <nav className="flex">
             <Link
               className="rounded py-2 px-3 flex items-center font-bold text-white bg-[#4dbaf9] gap-1"
@@ -61,10 +58,7 @@ export default async function Meetup({ params }: MeetupProps) {
             <div>
               <p className="text-[#333] flex items-center gap-2">
                 <MdDateRange size={18} color="#e65175" />
-                {/*
-                 * //TODO: implement date formatting
-                 */}
-                {meetup.date}
+                {meetup.formattedDate}
               </p>
 
               <p className="text-[#333] flex items-center mt-2 gap-2">

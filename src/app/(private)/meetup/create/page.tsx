@@ -31,10 +31,19 @@ export default async function CreateMeetup() {
       location: z.string().min(1),
     });
 
-    const values = schema.parse(formData);
+    const { date, ...values } = schema.parse(formData);
+
+    function createDateFromString() {
+      //dd/MM/yyyy - HH:mm
+      const [fullDate, time] = date.split(' - ');
+      const [day, month, year] = fullDate.split('/');
+
+      return new Date(`${month} ${day} ${year} ${time}`);
+    }
 
     const meetup = await createMeetup({
       ...values,
+      date: createDateFromString().toISOString(),
       organizerId: session.user.id,
     });
 

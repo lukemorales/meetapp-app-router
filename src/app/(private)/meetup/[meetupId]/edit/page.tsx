@@ -11,6 +11,7 @@ import { MdDeleteForever, MdSave } from 'react-icons/md';
 import { DatePicker } from '../../date-picker';
 import { findMeetup } from '../find-meetup';
 import { Metadata } from 'next';
+import { parseISO } from 'date-fns';
 
 type EditMeetupProps = {
   params: { meetupId: MeetupId };
@@ -52,7 +53,7 @@ export default async function EditMeetup({ params }: EditMeetupProps) {
   }
 
   return (
-    <div className="max-w-[60rem] my-12 mx-auto px-7 flex flex-col">
+    <div className="w-full max-w-[60rem] my-12 mx-auto px-7 flex flex-col flex-1">
       <form action={update} className="flex flex-col gap-3">
         <input
           className="w-full rounded h-12 py-2 px-3 text-[#515366] bg-white"
@@ -68,7 +69,11 @@ export default async function EditMeetup({ params }: EditMeetupProps) {
           defaultValue={meetup.description}
         />
 
-        <DatePicker name="date" placeholder="Data" />
+        <DatePicker
+          name="date"
+          placeholder="Data"
+          initialValue={parseISO(meetup.date)}
+        />
         <input
           className="w-full rounded h-12 py-2 px-3 text-[#515366] bg-white"
           type="text"

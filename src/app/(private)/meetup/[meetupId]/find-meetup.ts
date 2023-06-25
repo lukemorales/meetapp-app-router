@@ -1,5 +1,6 @@
 import { db, meetupsTable } from '@/database';
 import { MeetupId } from '@/shared/entity-ids';
+import { isAfter, parseISO, format } from 'date-fns';
 import { eq } from 'drizzle-orm';
 import { notFound } from 'next/navigation';
 import { cache } from 'react';
@@ -14,5 +15,9 @@ export const findMeetup = cache(async (meetupId: MeetupId) => {
     notFound();
   }
 
-  return meetup;
+  return {
+    ...meetup,
+    hasPast: isAfter(new Date(), parseISO(meetup.date)),
+    formattedDate: format(parseISO(meetup.date), "dd/MM/Y 'às' HH'h'mm"),
+  };
 });

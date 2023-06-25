@@ -20,6 +20,9 @@ dependencies:
   clsx:
     specifier: ^1.2.1
     version: 1.2.1
+  date-fns:
+    specifier: ^2.30.0
+    version: 2.30.0
   drizzle-orm:
     specifier: ^0.27.0
     version: 0.27.0(@neondatabase/serverless@0.4.20)
