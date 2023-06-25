@@ -4,6 +4,16 @@ const nextConfig = {
     serverActions: true,
     typedRoutes: true,
   },
+  images: {
+    dangerouslyAllowSVG: true,
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'ui-avatars.com',
+        port: '',
+      },
+    ],
+  },
 };
 
 module.exports = nextConfig;

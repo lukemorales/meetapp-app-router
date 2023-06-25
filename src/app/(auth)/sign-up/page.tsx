@@ -1,15 +1,33 @@
 import Link from 'next/link';
-import { AuthFormSubmitButton } from '../auth-form-submit-button';
+
+import { FormSubmitButton } from '@/components';
+
+import { zfd } from 'zod-form-data';
+import { Email, Password } from '@/shared/validation';
+import { z } from 'zod';
+import { createUser } from '@/database/inserts';
+import { redirect } from 'next/navigation';
+
+export const dynamic = 'force-static';
 
 export default function SignUpPage() {
   async function register(formData: FormData) {
     'use server';
 
-    const name = formData.get('name')?.toString();
-    const email = formData.get('email')?.toString();
-    const password = formData.get('password')?.toString();
+    const schema = zfd.formData({
+      name: z.string().min(1),
+      email: Email,
+      password: Password,
+    });
 
-    await new Promise((res) => setTimeout(res, 5000));
+    const userOptions = schema.parse(formData);
+
+    await Promise.all([
+      createUser(userOptions),
+      new Promise((res) => setTimeout(res, 800)),
+    ]);
+
+    redirect('/');
   }
 
   return (
@@ -38,7 +56,7 @@ export default function SignUpPage() {
         minLength={6}
       />
 
-      <AuthFormSubmitButton label="Criar conta" />
+      <FormSubmitButton>Criar conta</FormSubmitButton>
 
       <p className="mt-14 flex flex-col justify-between items-center cursor-default text-[#777] leading-4">
         Já tem uma conta?

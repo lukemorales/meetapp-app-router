@@ -2,8 +2,10 @@
 
 import { experimental_useFormStatus as useFormStatus } from 'react-dom';
 
-export const AuthFormSubmitButton: React.FC<{ label: string }> = ({
-  label,
+type FormSubmitButtonProps = React.PropsWithChildren;
+
+export const FormSubmitButton: React.FC<FormSubmitButtonProps> = ({
+  children,
 }) => {
   const form = useFormStatus();
 
@@ -13,7 +15,7 @@ export const AuthFormSubmitButton: React.FC<{ label: string }> = ({
       type="submit"
       disabled={form.pending}
     >
-      {label}
+      {children}
     </button>
   );
 };

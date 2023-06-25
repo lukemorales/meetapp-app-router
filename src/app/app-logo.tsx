@@ -1,6 +1,10 @@
 import Image from 'next/image';
 import logo from '../assets/logo.svg';
 
-export const AppLogo: React.FC = () => {
-  return <Image width={42} height={42} src={logo} alt="MeetApp" />;
+type AppLogoProps = {
+  size?: number;
+};
+
+export const AppLogo: React.FC<AppLogoProps> = ({ size = 42 }) => {
+  return <Image width={size} height={size} src={logo} alt="MeetApp" />;
 };

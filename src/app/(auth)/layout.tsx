@@ -1,12 +1,14 @@
-import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { AppLogo } from '../app-logo';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '../api/auth/[...nextauth]/route';
 
-export default function AuthLayout({ children }: React.PropsWithChildren) {
-  const cookiesStore = cookies();
-  const hasAuthCookie = cookiesStore.has('auth');
+type AuthLayoutProps = React.PropsWithChildren;
 
-  if (hasAuthCookie) {
+export default async function AuthLayout({ children }: AuthLayoutProps) {
+  const session = await getServerSession(authOptions);
+
+  if (session) {
     redirect('/dashboard');
   }
 
