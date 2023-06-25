@@ -8,6 +8,7 @@ import { redirect } from 'next/navigation';
 import { MdAddCircleOutline, MdDateRange, MdLocationOn } from 'react-icons/md';
 import { clsx } from 'clsx';
 
+// TODO: add loading.tsx
 export default async function Dashboard() {
   const session = await getServerSession(authOptions);
 

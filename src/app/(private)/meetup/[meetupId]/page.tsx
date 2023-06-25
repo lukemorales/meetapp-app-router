@@ -12,6 +12,7 @@ type MeetupProps = {
   params: { meetupId: MeetupId };
 };
 
+// TODO: add loading.tsx
 export default async function Meetup({ params }: MeetupProps) {
   const session = await getServerSession(authOptions);
 
@@ -50,7 +51,9 @@ export default async function Meetup({ params }: MeetupProps) {
             <div>
               <p className="text-[#333] flex items-center gap-2">
                 <MdDateRange size={18} color="#e65175" />
-                // TODO: implement date formatting
+                {/*
+                 * //TODO: implement date formatting
+                 */}
                 {meetup.date}
               </p>
 
