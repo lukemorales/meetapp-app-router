@@ -3,6 +3,11 @@ import { SignOutButton } from './sign-out-button';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 import { redirect } from 'next/navigation';
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'My profile',
+};
 
 export default async function Profile() {
   const session = await getServerSession(authOptions);
@@ -19,7 +24,7 @@ export default async function Profile() {
   }
 
   return (
-    <div className="max-w-[600px] my-12 mx-auto px-7 flex flex-col">
+    <div className="w-full max-w-[600px] my-12 mx-auto px-7 flex flex-col">
       <form className="flex flex-col gap-3" action={updateProfile}>
         <input
           required

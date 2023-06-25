@@ -10,10 +10,21 @@ import { redirect } from 'next/navigation';
 import { MdDeleteForever, MdSave } from 'react-icons/md';
 import { DatePicker } from '../../date-picker';
 import { findMeetup } from '../find-meetup';
+import { Metadata } from 'next';
 
 type EditMeetupProps = {
   params: { meetupId: MeetupId };
 };
+
+export async function generateMetadata({
+  params,
+}: EditMeetupProps): Promise<Metadata> {
+  const meetup = await findMeetup(params.meetupId);
+
+  return {
+    title: `Edit ${meetup.title}`,
+  };
+}
 
 export default async function EditMeetup({ params }: EditMeetupProps) {
   const session = await getServerSession(authOptions);

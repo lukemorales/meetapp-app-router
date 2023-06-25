@@ -13,10 +13,12 @@ export default async function PrivateLayout({ children }: PrivateLayoutProps) {
   }
 
   return (
-    <div className="min-h-full">
+    <div className="min-h-full flex flex-col w-full">
       <Header profile={session.user} />
 
-      <main className="max-w-[60rem] my-14 mx-auto px-8">{children}</main>
+      <main className="max-w-[60rem] my-14 mx-auto px-8 flex-1 w-full flex flex-col">
+        {children}
+      </main>
     </div>
   );
 }

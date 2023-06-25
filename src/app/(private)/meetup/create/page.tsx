@@ -8,6 +8,11 @@ import { z } from 'zod';
 import { zfd } from 'zod-form-data';
 import { DatePicker } from '../date-picker';
 import { revalidatePath } from 'next/cache';
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Create Meetup',
+};
 
 export default async function CreateMeetup() {
   async function create(formData: FormData) {
@@ -38,7 +43,7 @@ export default async function CreateMeetup() {
   }
 
   return (
-    <div className="max-w-[60rem] my-12 mx-auto px-7 flex flex-col">
+    <div className="max-w-[60rem] w-full my-12 mx-auto px-7 flex flex-col">
       <form action={create} className="flex flex-col gap-3">
         <input
           className="w-full rounded h-12 py-2 px-3 text-[#515366] bg-white"

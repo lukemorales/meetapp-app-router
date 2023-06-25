@@ -1,11 +1,15 @@
 import './globals.css';
 import { Inter } from 'next/font/google';
 import { Providers } from './providers';
+import { Metadata } from 'next';
 
 const inter = Inter({ subsets: ['latin'] });
 
-export const metadata = {
-  title: 'MeetApp',
+export const metadata: Metadata = {
+  title: {
+    default: 'MeetApp',
+    template: '%s | MeetApp',
+  },
   description: 'Your next meetup is here',
 };
 

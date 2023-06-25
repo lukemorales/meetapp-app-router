@@ -7,12 +7,22 @@ import Link from 'next/link';
 import { MdDateRange, MdEdit, MdLocationOn } from 'react-icons/md';
 import nl2br from 'react-nl2br';
 import { findMeetup } from './find-meetup';
+import { Metadata } from 'next';
 
 type MeetupProps = {
   params: { meetupId: MeetupId };
 };
 
-// TODO: add loading.tsx
+export async function generateMetadata({
+  params,
+}: MeetupProps): Promise<Metadata> {
+  const meetup = await findMeetup(params.meetupId);
+
+  return {
+    title: meetup.title,
+  };
+}
+
 export default async function Meetup({ params }: MeetupProps) {
   const session = await getServerSession(authOptions);
 
