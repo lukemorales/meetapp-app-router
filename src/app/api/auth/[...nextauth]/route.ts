@@ -36,7 +36,7 @@ export const authOptions: NextAuthOptions = {
 
         const { email, password } = validation.data;
 
-        const user = await db.query.usersTable
+        const user = await db.query.users
           .findFirst({
             where: eq(usersTable.email, email),
           })

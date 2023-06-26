@@ -21,7 +21,7 @@ export default async function Dashboard() {
     redirect('/');
   }
 
-  const meetups = await db.query.meetupsTable
+  const meetups = await db.query.meetups
     .findMany({
       where: eq(meetupsTable.organizerId, session.user.id),
       limit: 10,

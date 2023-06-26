@@ -7,7 +7,7 @@ import { notFound } from 'next/navigation';
 import { cache } from 'react';
 
 export const findMeetup = cache(async (meetupId: MeetupId, userId: UserId) => {
-  const meetup = await db.query.meetupsTable.findFirst({
+  const meetup = await db.query.meetups.findFirst({
     where: and(
       eq(meetupsTable.id, meetupId),
       eq(meetupsTable.organizerId, userId),
