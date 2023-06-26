@@ -8,6 +8,7 @@ import { MdDateRange, MdEdit, MdLocationOn } from 'react-icons/md';
 import nl2br from 'react-nl2br';
 import { findMeetup } from './find-meetup';
 import { Metadata } from 'next';
+import { redirect } from 'next/navigation';
 
 type MeetupProps = {
   params: { meetupId: MeetupId };
@@ -16,7 +17,13 @@ type MeetupProps = {
 export async function generateMetadata({
   params,
 }: MeetupProps): Promise<Metadata> {
-  const meetup = await findMeetup(params.meetupId);
+  const session = await getServerSession(authOptions);
+
+  if (!session) {
+    redirect('/');
+  }
+
+  const meetup = await findMeetup(params.meetupId, session.user.id);
 
   return {
     title: meetup.title,
@@ -26,7 +33,11 @@ export async function generateMetadata({
 export default async function Meetup({ params }: MeetupProps) {
   const session = await getServerSession(authOptions);
 
-  const meetup = await findMeetup(params.meetupId);
+  if (!session) {
+    redirect('/');
+  }
+
+  const meetup = await findMeetup(params.meetupId, session.user.id);
 
   return (
     <div>

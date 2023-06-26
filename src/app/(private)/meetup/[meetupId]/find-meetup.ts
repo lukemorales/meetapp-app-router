@@ -1,14 +1,17 @@
+import 'server-only';
 import { db, meetupsTable } from '@/database';
-import { MeetupId } from '@/shared/entity-ids';
+import { MeetupId, UserId } from '@/shared/entity-ids';
 import { isAfter, parseISO, format } from 'date-fns';
-import { eq } from 'drizzle-orm';
+import { and, eq } from 'drizzle-orm';
 import { notFound } from 'next/navigation';
 import { cache } from 'react';
-import 'server-only';
 
-export const findMeetup = cache(async (meetupId: MeetupId) => {
+export const findMeetup = cache(async (meetupId: MeetupId, userId: UserId) => {
   const meetup = await db.query.meetupsTable.findFirst({
-    where: eq(meetupsTable.id, meetupId),
+    where: and(
+      eq(meetupsTable.id, meetupId),
+      eq(meetupsTable.organizerId, userId),
+    ),
   });
 
   if (!meetup) {

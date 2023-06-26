@@ -20,7 +20,13 @@ type EditMeetupProps = {
 export async function generateMetadata({
   params,
 }: EditMeetupProps): Promise<Metadata> {
-  const meetup = await findMeetup(params.meetupId);
+  const session = await getServerSession(authOptions);
+
+  if (!session) {
+    redirect('/');
+  }
+
+  const meetup = await findMeetup(params.meetupId, session.user.id);
 
   return {
     title: `Edit ${meetup.title}`,
@@ -30,11 +36,11 @@ export async function generateMetadata({
 export default async function EditMeetup({ params }: EditMeetupProps) {
   const session = await getServerSession(authOptions);
 
-  const meetup = await findMeetup(params.meetupId);
-
-  if (meetup.organizerId !== session?.user.id) {
-    redirect('/dashboard');
+  if (!session) {
+    redirect('/');
   }
+
+  const meetup = await findMeetup(params.meetupId, session.user.id);
 
   // TODO: implement meetup update
   async function update(formData: FormData) {
