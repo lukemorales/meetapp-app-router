@@ -1,7 +1,5 @@
-import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 import { FormSubmitButton } from '@/components';
-import { createMeetup } from '@/database/inserts';
-import { getServerSession } from 'next-auth';
+
 import { redirect } from 'next/navigation';
 import { MdAddCircleOutline } from 'react-icons/md';
 import { z } from 'zod';
@@ -9,6 +7,7 @@ import { zfd } from 'zod-form-data';
 import { DatePicker } from '../date-picker';
 import { revalidatePath } from 'next/cache';
 import { Metadata } from 'next';
+import { getActiveSessionServer, meetupsService } from '@/server';
 
 export const metadata: Metadata = {
   title: 'Create Meetup',
@@ -18,11 +17,7 @@ export default async function CreateMeetup() {
   async function create(formData: FormData) {
     'use server';
 
-    const session = await getServerSession(authOptions);
-
-    if (!session) {
-      redirect('/');
-    }
+    const session = await getActiveSessionServer();
 
     const schema = zfd.formData({
       date: z.string(),
@@ -31,19 +26,19 @@ export default async function CreateMeetup() {
       location: z.string().min(1),
     });
 
-    const { date, ...values } = schema.parse(formData);
+    const { date: dateString, ...values } = schema.parse(formData);
 
-    function createDateFromString() {
-      //dd/MM/yyyy - HH:mm
+    function createDateFromString(date: string) {
+      // dd/MM/yyyy - HH:mm
       const [fullDate, time] = date.split(' - ');
       const [day, month, year] = fullDate.split('/');
 
       return new Date(`${month} ${day} ${year} ${time}`);
     }
 
-    const meetup = await createMeetup({
+    const meetup = await meetupsService.createMeetup({
       ...values,
-      date: createDateFromString().toISOString(),
+      date: createDateFromString(dateString).toISOString(),
       organizerId: session.user.id,
     });
 

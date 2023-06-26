@@ -5,8 +5,8 @@ import { FormSubmitButton } from '@/components';
 import { zfd } from 'zod-form-data';
 import { Email, Password } from '@/shared/validation';
 import { z } from 'zod';
-import { createUser } from '@/database/inserts';
 import { redirect } from 'next/navigation';
+import { usersService } from '@/server';
 
 export const dynamic = 'force-static';
 
@@ -20,12 +20,7 @@ export default function SignUpPage() {
       password: Password,
     });
 
-    const userOptions = schema.parse(formData);
-
-    await Promise.all([
-      createUser(userOptions),
-      new Promise((res) => setTimeout(res, 800)),
-    ]);
+    await usersService.createUser(schema.parse(formData));
 
     redirect('/');
   }

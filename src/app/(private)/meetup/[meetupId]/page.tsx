@@ -1,14 +1,13 @@
-import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 import { MeetupId } from '@/shared/entity-ids';
 
-import { getServerSession } from 'next-auth';
 import Link from 'next/link';
 
+import { getActiveSessionServer } from '@/server';
+import { Metadata } from 'next';
+import { redirect } from 'next/navigation';
 import { MdDateRange, MdEdit, MdLocationOn } from 'react-icons/md';
 import nl2br from 'react-nl2br';
 import { findMeetup } from './find-meetup';
-import { Metadata } from 'next';
-import { redirect } from 'next/navigation';
 
 type MeetupProps = {
   params: { meetupId: MeetupId };
@@ -17,11 +16,7 @@ type MeetupProps = {
 export async function generateMetadata({
   params,
 }: MeetupProps): Promise<Metadata> {
-  const session = await getServerSession(authOptions);
-
-  if (!session) {
-    redirect('/');
-  }
+  const session = await getActiveSessionServer();
 
   const meetup = await findMeetup(params.meetupId, session.user.id);
 
@@ -31,7 +26,7 @@ export async function generateMetadata({
 }
 
 export default async function Meetup({ params }: MeetupProps) {
-  const session = await getServerSession(authOptions);
+  const session = await getActiveSessionServer();
 
   if (!session) {
     redirect('/');

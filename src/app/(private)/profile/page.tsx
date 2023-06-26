@@ -1,22 +1,14 @@
 import { FormSubmitButton } from '@/components';
-import { SignOutButton } from './sign-out-button';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/app/api/auth/[...nextauth]/route';
-import { redirect } from 'next/navigation';
+import { getActiveSessionServer } from '@/server';
 import { Metadata } from 'next';
+import { SignOutButton } from './sign-out-button';
 
 export const metadata: Metadata = {
   title: 'My profile',
 };
 
 export default async function Profile() {
-  const session = await getServerSession(authOptions);
-
-  if (!session) {
-    redirect('/');
-  }
-
-  const { user } = session;
+  const { user } = await getActiveSessionServer();
 
   // TODO: implement profile update
   async function updateProfile(formData: FormData) {

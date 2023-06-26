@@ -1,13 +1,11 @@
-import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 import { db, meetupsTable } from '@/database';
+import { getActiveSessionServer } from '@/server';
+import { formatMeetup } from '@/shared/meetup';
 import { clsx } from 'clsx';
-import { format, isAfter, isBefore, parseISO } from 'date-fns';
 import { eq } from 'drizzle-orm';
 import { exhaustive } from 'exhaustive';
 import { Metadata } from 'next';
-import { getServerSession } from 'next-auth';
 import Link from 'next/link';
-import { redirect } from 'next/navigation';
 import { MdDateRange, MdLocationOn } from 'react-icons/md';
 
 export const metadata: Metadata = {
@@ -15,11 +13,7 @@ export const metadata: Metadata = {
 };
 
 export default async function Dashboard() {
-  const session = await getServerSession(authOptions);
-
-  if (!session) {
-    redirect('/');
-  }
+  const session = await getActiveSessionServer();
 
   const meetups = await db.query.meetups
     .findMany({
@@ -27,13 +21,7 @@ export default async function Dashboard() {
       limit: 10,
       orderBy: meetupsTable.date,
     })
-    .then((meetups) =>
-      meetups.map((meetup) => ({
-        ...meetup,
-        hasPast: isAfter(new Date(), parseISO(meetup.date)),
-        formattedDate: format(parseISO(meetup.date), "MM/dd/Y 'at' HH'h'mm"),
-      })),
-    );
+    .then((meetups) => meetups.map(formatMeetup));
 
   return exhaustive(meetups.length === 0, {
     true: () => (

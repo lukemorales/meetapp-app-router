@@ -1,15 +1,18 @@
+import { unprefixId } from '@/shared/unprefix-id';
 import { customType, timestamp } from 'drizzle-orm/pg-core';
 
 /**
  * Formats the db schema by removing `Table` suffix from keys
  *
  * @example
+ * // without formatDbSchema
  * export const db = drizzle(postgresConnection, {
  *   schema: { usersTable, meetupsTable }
  * });
  *
  * await db.query.usersTable.findFirst()
  *
+ * // with formatDbSchema
  * export const db = drizzle(postgresConnection, {
  *   schema: formatDbSchema({ usersTable, meetupsTable })
  * });
@@ -38,12 +41,6 @@ export const formatDbSchema = <T extends object>(schema: T) => {
     return acc;
   }, {} as Schema<typeof schema>);
 };
-
-/**
- * Returns the base ID with any prefixes removed.
- */
-export const unprefixId = (id: string): string =>
-  id.split('_').slice(-1).join('_');
 
 export const entityId = <T extends string>(prefix: T) =>
   customType<{ data: string }>({

@@ -1,17 +1,16 @@
-import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 import { FormSubmitButton } from '@/components';
 import { db, meetupsTable } from '@/database';
+import { getActiveSessionServer } from '@/server';
 import { MeetupId } from '@/shared/entity-ids';
+import { parseISO } from 'date-fns';
 import { eq } from 'drizzle-orm';
-import { getServerSession } from 'next-auth';
+import { Metadata } from 'next';
 import { revalidatePath } from 'next/cache';
 import { RedirectType } from 'next/dist/client/components/redirect';
 import { redirect } from 'next/navigation';
 import { MdDeleteForever, MdSave } from 'react-icons/md';
 import { DatePicker } from '../../date-picker';
 import { findMeetup } from '../find-meetup';
-import { Metadata } from 'next';
-import { parseISO } from 'date-fns';
 
 type EditMeetupProps = {
   params: { meetupId: MeetupId };
@@ -20,11 +19,7 @@ type EditMeetupProps = {
 export async function generateMetadata({
   params,
 }: EditMeetupProps): Promise<Metadata> {
-  const session = await getServerSession(authOptions);
-
-  if (!session) {
-    redirect('/');
-  }
+  const session = await getActiveSessionServer();
 
   const meetup = await findMeetup(params.meetupId, session.user.id);
 
@@ -34,11 +29,7 @@ export async function generateMetadata({
 }
 
 export default async function EditMeetup({ params }: EditMeetupProps) {
-  const session = await getServerSession(authOptions);
-
-  if (!session) {
-    redirect('/');
-  }
+  const session = await getActiveSessionServer();
 
   const meetup = await findMeetup(params.meetupId, session.user.id);
 

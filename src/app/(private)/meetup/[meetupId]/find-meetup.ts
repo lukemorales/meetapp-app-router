@@ -1,10 +1,10 @@
 import 'server-only';
 import { db, meetupsTable } from '@/database';
 import { MeetupId, UserId } from '@/shared/entity-ids';
-import { isAfter, parseISO, format } from 'date-fns';
 import { and, eq } from 'drizzle-orm';
 import { notFound } from 'next/navigation';
 import { cache } from 'react';
+import { formatMeetup } from '@/shared/meetup';
 
 export const findMeetup = cache(async (meetupId: MeetupId, userId: UserId) => {
   const meetup = await db.query.meetups.findFirst({
@@ -18,9 +18,5 @@ export const findMeetup = cache(async (meetupId: MeetupId, userId: UserId) => {
     notFound();
   }
 
-  return {
-    ...meetup,
-    hasPast: isAfter(new Date(), parseISO(meetup.date)),
-    formattedDate: format(parseISO(meetup.date), "dd/MM/Y 'às' HH'h'mm"),
-  };
+  return formatMeetup(meetup);
 });
