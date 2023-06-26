@@ -37,7 +37,7 @@ export default function SignUpPage() {
         className="w-full rounded h-12 py-2 px-3 text-[#333] bg-[#3f2744]/10"
         name="name"
         type="text"
-        placeholder="Nome"
+        placeholder="Name"
         minLength={1}
       />
       <input
@@ -52,19 +52,19 @@ export default function SignUpPage() {
         className="w-full rounded h-12 py-2 px-3 text-[#333] bg-[#3f2744]/10"
         name="password"
         type="password"
-        placeholder="Senha"
+        placeholder="Password"
         minLength={6}
       />
 
-      <FormSubmitButton>Criar conta</FormSubmitButton>
+      <FormSubmitButton>Create account</FormSubmitButton>
 
       <p className="mt-14 flex flex-col justify-between items-center cursor-default text-[#777] leading-4">
-        Já tem uma conta?
+        Already registered?
         <Link
           href="/"
           className="inline-block py-2 px-5 text-[#e5556e] text-base font-bold"
         >
-          Fazer login
+          Sign in
         </Link>
       </p>
     </form>

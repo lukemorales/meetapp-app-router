@@ -31,7 +31,7 @@ export default async function Profile() {
           className="w-full rounded h-12 py-2 px-3 text-[#515366] bg-white"
           name="name"
           type="text"
-          placeholder="Nome completo"
+          placeholder="Full name"
           minLength={1}
           defaultValue={user.name}
         />
@@ -51,7 +51,7 @@ export default async function Profile() {
             className="w-full rounded h-12 py-2 px-3 text-[#515366] bg-white"
             name="password"
             type="password"
-            placeholder="Senha atual"
+            placeholder="Current password"
             minLength={1}
           />
 
@@ -60,7 +60,7 @@ export default async function Profile() {
             className="w-full rounded h-12 py-2 px-3 text-[#515366] bg-white"
             name="new-password"
             type="password"
-            placeholder="Nova senha"
+            placeholder="New password"
             minLength={1}
           />
           <input
@@ -68,12 +68,12 @@ export default async function Profile() {
             className="w-full rounded h-12 py-2 px-3 text-[#515366] bg-white"
             name="confirm-password"
             type="password"
-            placeholder="Confirmar nova senha"
+            placeholder="Confirm password"
             minLength={1}
           />
         </fieldset>
 
-        <FormSubmitButton>Atualizar perfil</FormSubmitButton>
+        <FormSubmitButton>Save profile</FormSubmitButton>
       </form>
 
       <SignOutButton />

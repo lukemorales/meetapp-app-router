@@ -65,13 +65,13 @@ export default async function EditMeetup({ params }: EditMeetupProps) {
           className="w-full rounded h-12 py-2 px-3 text-[#515366] bg-white"
           type="text"
           name="title"
-          placeholder="Nome do evento"
+          placeholder="Event name"
           defaultValue={meetup.title}
         />
         <textarea
           className="w-full rounded py-2 px-3 text-[#515366] bg-white resize-none h-[12.5rem]"
           name="description"
-          placeholder="Descrição"
+          placeholder="Description"
           defaultValue={meetup.description}
         />
 
@@ -84,7 +84,7 @@ export default async function EditMeetup({ params }: EditMeetupProps) {
           className="w-full rounded h-12 py-2 px-3 text-[#515366] bg-white"
           type="text"
           name="location"
-          placeholder="Localização"
+          placeholder="Location"
           defaultValue={meetup.location}
         />
 
@@ -95,13 +95,13 @@ export default async function EditMeetup({ params }: EditMeetupProps) {
             className="flex items-center bg-none font-bold text-[#e65175] py-2 px-3 h-12 gap-2"
           >
             <MdDeleteForever size={20} color="#e65175" />
-            Cancelar Meetup
+            Cancel meetup
           </button>
 
           <FormSubmitButton>
             <div className="flex items-center gap-2 justify-center self-end py-2 px-3">
               <MdSave size={20} color="#fff" />
-              Salvar
+              Save
             </div>
           </FormSubmitButton>
         </div>

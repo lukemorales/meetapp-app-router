@@ -18,12 +18,12 @@ export default async function SignInPage({ params }: any) {
       />
 
       <p className="mt-14 flex flex-col justify-between items-center cursor-default text-[#777] leading-4">
-        Ainda não é cadastrado?
+        Don’t have an account?
         <Link
           href="/sign-up"
           className="inline-block py-2 px-5 text-[#e5556e] text-base font-bold"
         >
-          Criar uma conta
+          Register now
         </Link>
       </p>
     </AuthForm>

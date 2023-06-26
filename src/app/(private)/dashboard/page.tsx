@@ -31,14 +31,14 @@ export default async function Dashboard() {
       meetups.map((meetup) => ({
         ...meetup,
         hasPast: isAfter(new Date(), parseISO(meetup.date)),
-        formattedDate: format(parseISO(meetup.date), "dd/MM/Y 'às' HH'h'mm"),
+        formattedDate: format(parseISO(meetup.date), "MM/dd/Y 'at' HH'h'mm"),
       })),
     );
 
   return exhaustive(meetups.length === 0, {
     true: () => (
       <aside className="text-center text-[#eee] flex justify-center items-center flex-1">
-        {'Você ainda não possui nenhum Meetup :('}
+        You have not created any meetups
       </aside>
     ),
     false: () => (

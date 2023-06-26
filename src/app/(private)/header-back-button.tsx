@@ -18,7 +18,7 @@ export const HeaderBackButton: React.FC = () => {
       onClick={router.back}
     >
       <MdArrowBack size={18} />
-      Voltar
+      Back
     </button>
   );
 };

@@ -8,7 +8,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
     <>
       <header className="w-full flex items-center justify-between mb-10">
         <h2 className="text-[#f94d6a] font-medium tracking-[0.5px] text-3xl">
-          Meus Meetups
+          My meetups
         </h2>
 
         <Link
@@ -16,7 +16,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
           href="/meetup/create"
         >
           <MdAddCircleOutline color="#fff" size={22} />
-          Novo Meetup
+          New Meetup
         </Link>
       </header>
 

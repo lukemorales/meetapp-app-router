@@ -34,11 +34,11 @@ export const AuthForm: React.FC<React.PropsWithChildren> = ({ children }) => {
         className="w-full rounded h-12 py-2 px-3 text-[#333] bg-[#3f2744]/10"
         name="password"
         type="password"
-        placeholder="Senha"
+        placeholder="Password"
         minLength={6}
       />
 
-      <FormSubmitButton>Entrar</FormSubmitButton>
+      <FormSubmitButton>Sign in</FormSubmitButton>
 
       {children}
     </form>

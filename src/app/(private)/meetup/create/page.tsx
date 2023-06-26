@@ -58,20 +58,20 @@ export default async function CreateMeetup() {
           className="w-full rounded h-12 py-2 px-3 text-[#515366] bg-white"
           type="text"
           name="title"
-          placeholder="Nome do evento"
+          placeholder="Event name"
         />
         <textarea
           className="w-full rounded py-2 px-3 text-[#515366] bg-white resize-none h-[12.5rem]"
           name="description"
-          placeholder="Descrição"
+          placeholder="Description"
         />
 
-        <DatePicker name="date" placeholder="Data" />
+        <DatePicker name="date" placeholder="Date" />
         <input
           className="w-full rounded h-12 py-2 px-3 text-[#515366] bg-white"
           type="text"
           name="location"
-          placeholder="Localização"
+          placeholder="Location"
         />
 
         <FormSubmitButton>

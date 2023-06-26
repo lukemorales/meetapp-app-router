@@ -10,7 +10,7 @@ export const SignOutButton: React.FC = () => {
       className="bg-none text-white font-bold border-0 flex items-center self-center h-12 mt-4 opacity-70 gap-3"
       onClick={() => signOut()}
     >
-      Logout
+      Sign out
       <MdExitToApp color="#fff" size={20} />
     </button>
   );
