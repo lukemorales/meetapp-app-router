@@ -2,7 +2,7 @@ import { MeetupId } from '@/shared/entity-ids';
 
 import Link from 'next/link';
 
-import { getActiveSessionServer } from '@/server';
+import { getActiveServerSession } from '@/server';
 import { Metadata } from 'next';
 import { redirect } from 'next/navigation';
 import { MdDateRange, MdEdit, MdLocationOn } from 'react-icons/md';
@@ -16,7 +16,7 @@ type MeetupProps = {
 export async function generateMetadata({
   params,
 }: MeetupProps): Promise<Metadata> {
-  const session = await getActiveSessionServer();
+  const session = await getActiveServerSession();
 
   const meetup = await findMeetup(params.meetupId, session.user.id);
 
@@ -26,7 +26,7 @@ export async function generateMetadata({
 }
 
 export default async function Meetup({ params }: MeetupProps) {
-  const session = await getActiveSessionServer();
+  const session = await getActiveServerSession();
 
   if (!session) {
     redirect('/');

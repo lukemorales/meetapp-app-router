@@ -1,5 +1,5 @@
 import { db, meetupsTable } from '@/database';
-import { getActiveSessionServer } from '@/server';
+import { getActiveServerSession } from '@/server';
 import { formatMeetup } from '@/shared/meetup';
 import { clsx } from 'clsx';
 import { eq } from 'drizzle-orm';
@@ -13,7 +13,7 @@ export const metadata: Metadata = {
 };
 
 export default async function Dashboard() {
-  const session = await getActiveSessionServer();
+  const session = await getActiveServerSession();
 
   const meetups = await db.query.meetups
     .findMany({

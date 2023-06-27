@@ -1,6 +1,6 @@
 import { FormSubmitButton } from '@/components';
 import { db, usersTable } from '@/database';
-import { getActiveSessionServer } from '@/server';
+import { getActiveServerSession } from '@/server';
 import { comparePassword, encryptPassword } from '@/shared/encryption';
 import { Email, Password } from '@/shared/validation';
 import { eq } from 'drizzle-orm';
@@ -11,15 +11,15 @@ import { zfd } from 'zod-form-data';
 import { PasswordInputs } from './password-inputs';
 import { SignOutButton } from './sign-out-button';
 import { UpdateProfileForm } from './update-profile-form';
+import * as E from '@effect/data/Either';
 
 export const metadata: Metadata = {
   title: 'My profile',
 };
 
 export default async function Profile() {
-  const { user } = await getActiveSessionServer();
+  const { user } = await getActiveServerSession();
 
-  // TODO: implement profile update
   async function updateProfile(formData: FormData) {
     'use server';
 
@@ -27,9 +27,9 @@ export default async function Profile() {
       .formData({
         name: z.string().min(1),
         email: Email,
-        password: z.union([Password, z.string()]),
-        'new-password': z.union([Password, z.string()]),
-        'confirm-password': z.union([Password, z.string()]),
+        password: z.union([Password, z.literal('')]),
+        'new-password': z.union([Password, z.literal('')]),
+        'confirm-password': z.union([Password, z.literal('')]),
       })
       .refine((data) => {
         if (data['new-password']) {
@@ -64,7 +64,7 @@ export default async function Profile() {
       );
 
       if (!isSamePassword) {
-        throw new Error('Invalid password');
+        return E.left('Invalid password');
       }
 
       return db
@@ -81,7 +81,7 @@ export default async function Profile() {
           updatedAt: usersTable.updatedAt,
           createdAt: usersTable.createdAt,
         })
-        .then(([user]) => user);
+        .then(([user]) => E.right(user));
     }
 
     return db
@@ -95,7 +95,7 @@ export default async function Profile() {
         updatedAt: usersTable.updatedAt,
         createdAt: usersTable.createdAt,
       })
-      .then(([user]) => user);
+      .then(([user]) => E.right(user));
   }
 
   return (

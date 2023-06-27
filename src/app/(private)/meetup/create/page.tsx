@@ -7,7 +7,8 @@ import { zfd } from 'zod-form-data';
 import { DatePicker } from '../date-picker';
 import { revalidatePath } from 'next/cache';
 import { Metadata } from 'next';
-import { getActiveSessionServer, meetupsService } from '@/server';
+import { getActiveServerSession, meetupsService } from '@/server';
+import { createDateFromDatePickerString } from '../create-date-from-string';
 
 export const metadata: Metadata = {
   title: 'Create Meetup',
@@ -17,7 +18,7 @@ export default async function CreateMeetup() {
   async function create(formData: FormData) {
     'use server';
 
-    const session = await getActiveSessionServer();
+    const session = await getActiveServerSession();
 
     const schema = zfd.formData({
       date: z.string(),
@@ -26,19 +27,11 @@ export default async function CreateMeetup() {
       location: z.string().min(1),
     });
 
-    const { date: dateString, ...values } = schema.parse(formData);
-
-    function createDateFromString(date: string) {
-      // dd/MM/yyyy - HH:mm
-      const [fullDate, time] = date.split(' - ');
-      const [day, month, year] = fullDate.split('/');
-
-      return new Date(`${month} ${day} ${year} ${time}`);
-    }
+    const { date, ...values } = schema.parse(formData);
 
     const meetup = await meetupsService.createMeetup({
       ...values,
-      date: createDateFromString(dateString).toISOString(),
+      date: createDateFromDatePickerString(date).toISOString(),
       organizerId: session.user.id,
     });
 

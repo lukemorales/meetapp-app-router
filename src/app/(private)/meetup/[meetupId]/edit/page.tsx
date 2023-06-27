@@ -1,6 +1,6 @@
 import { FormSubmitButton } from '@/components';
 import { db, meetupsTable } from '@/database';
-import { getActiveSessionServer } from '@/server';
+import { getActiveServerSession } from '@/server';
 import { MeetupId } from '@/shared/entity-ids';
 import { parseISO } from 'date-fns';
 import { eq } from 'drizzle-orm';
@@ -11,6 +11,7 @@ import { redirect } from 'next/navigation';
 import { MdDeleteForever, MdSave } from 'react-icons/md';
 import { DatePicker } from '../../date-picker';
 import { findMeetup } from '../find-meetup';
+import toast from 'react-hot-toast';
 
 type EditMeetupProps = {
   params: { meetupId: MeetupId };
@@ -19,7 +20,7 @@ type EditMeetupProps = {
 export async function generateMetadata({
   params,
 }: EditMeetupProps): Promise<Metadata> {
-  const session = await getActiveSessionServer();
+  const session = await getActiveServerSession();
 
   const meetup = await findMeetup(params.meetupId, session.user.id);
 
@@ -29,7 +30,7 @@ export async function generateMetadata({
 }
 
 export default async function EditMeetup({ params }: EditMeetupProps) {
-  const session = await getActiveSessionServer();
+  const session = await getActiveServerSession();
 
   const meetup = await findMeetup(params.meetupId, session.user.id);
 
@@ -40,11 +41,12 @@ export default async function EditMeetup({ params }: EditMeetupProps) {
     redirect(`/meetup/${meetup.id}`);
   }
 
-  async function cancelMeetup(_formData: FormData) {
+  async function cancelMeetup(_: FormData) {
     'use server';
 
     await db.delete(meetupsTable).where(eq(meetupsTable.id, params.meetupId));
 
+    toast.success('Meetup deleted');
     revalidatePath('/dashboard');
     redirect('/dashboard', RedirectType.replace);
   }

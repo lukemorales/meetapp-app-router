@@ -3,9 +3,12 @@
 import { User } from '@/database';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
+import * as E from '@effect/data/Either';
+import { pipe } from '@effect/data/Function';
+import { toast } from 'react-hot-toast';
 
 type UpdateProfileFormProps = React.PropsWithChildren<{
-  action: (formData: FormData) => Promise<User>;
+  action: (formData: FormData) => Promise<E.Either<string, User>>;
 }>;
 
 export const UpdateProfileForm: React.FC<UpdateProfileFormProps> = ({
@@ -16,10 +19,22 @@ export const UpdateProfileForm: React.FC<UpdateProfileFormProps> = ({
   const router = useRouter();
 
   async function updateProfile(formData: FormData) {
-    const updatedUser = await action(formData);
-    await session.update(updatedUser);
+    const updateResult = await action(formData);
 
-    router.refresh();
+    return pipe(
+      updateResult,
+      E.match(
+        async (message) => {
+          toast.error(message);
+        },
+        async (updatedUser) => {
+          toast.success('Profile updated');
+          await session.update(updatedUser);
+
+          router.refresh();
+        },
+      ),
+    );
   }
 
   return (

@@ -12,7 +12,7 @@ import CredentialsProvider from 'next-auth/providers/credentials';
 import { redirect } from 'next/navigation';
 import { z } from 'zod';
 
-export async function getActiveSessionServer() {
+export async function getActiveServerSession() {
   const session = await getServerSession(authOptions);
 
   if (!session) {

@@ -1,10 +1,10 @@
-import { getActiveSessionServer } from '@/server';
+import { getActiveServerSession } from '@/server';
 import { Header } from './header';
 
 type PrivateLayoutProps = React.PropsWithChildren;
 
 export default async function PrivateLayout({ children }: PrivateLayoutProps) {
-  const { user } = await getActiveSessionServer();
+  const { user } = await getActiveServerSession();
 
   return (
     <div className="min-h-full flex flex-col w-full">
