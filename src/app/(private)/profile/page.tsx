@@ -1,6 +1,6 @@
 import { FormSubmitButton } from '@/components';
 import { db, usersTable } from '@/database';
-import { getActiveServerSession } from '@/server';
+import { getActiveServerSession, usersService } from '@/server';
 import { comparePassword, encryptPassword } from '@/shared/encryption';
 import { Email, Password } from '@/shared/validation';
 import { eq } from 'drizzle-orm';
@@ -43,59 +43,11 @@ export default async function Profile() {
       .transform(({ name, email, password, ...passwords }) => ({
         name,
         email,
-        password,
-        newPassword: passwords['new-password'],
+        password: password || undefined,
+        newPassword: passwords['new-password'] || undefined,
       }));
 
-    const { password, newPassword, ...values } = schema.parse(formData);
-
-    const databaseUser = await db.query.users.findFirst({
-      where: eq(usersTable.id, user.id),
-    });
-
-    if (!databaseUser) {
-      notFound();
-    }
-
-    if (password && newPassword) {
-      const isSamePassword = await comparePassword(
-        password,
-        databaseUser.passwordHash,
-      );
-
-      if (!isSamePassword) {
-        return E.left('Invalid password');
-      }
-
-      return db
-        .update(usersTable)
-        .set({
-          ...values,
-          passwordHash: await encryptPassword(password),
-        })
-        .where(eq(usersTable.id, user.id))
-        .returning({
-          id: usersTable.id,
-          name: usersTable.name,
-          email: usersTable.email,
-          updatedAt: usersTable.updatedAt,
-          createdAt: usersTable.createdAt,
-        })
-        .then(([user]) => E.right(user));
-    }
-
-    return db
-      .update(usersTable)
-      .set(values)
-      .where(eq(usersTable.id, user.id))
-      .returning({
-        id: usersTable.id,
-        name: usersTable.name,
-        email: usersTable.email,
-        updatedAt: usersTable.updatedAt,
-        createdAt: usersTable.createdAt,
-      })
-      .then(([user]) => E.right(user));
+    return usersService.updateUser(user.id, schema.parse(formData));
   }
 
   return (
