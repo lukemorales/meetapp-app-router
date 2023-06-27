@@ -1,6 +1,6 @@
-import { usersTable, db } from '@/database';
+import { db, usersTable } from '@/database';
 import { UserId } from '@/shared/entity-ids';
-import { Password, HashedPassword } from '@/shared/validation';
+import { EncryptedPassword, Password } from '@/shared/validation';
 import { hash } from 'bcryptjs';
 import { InferModel } from 'drizzle-orm';
 import { User } from 'next-auth';
@@ -21,7 +21,7 @@ export async function createUser(options: CreateUserOptions): Promise<User> {
     .values({
       ...values,
       id: UserId.parse(ulid()),
-      passwordHash: HashedPassword.parse(await hash(password, 6)),
+      passwordHash: EncryptedPassword.parse(await hash(password, 10)),
     })
     .returning({
       id: usersTable.id,

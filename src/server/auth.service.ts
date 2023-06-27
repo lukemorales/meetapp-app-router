@@ -1,16 +1,16 @@
 import 'server-only';
 
-import { db, usersTable } from '@/database';
+import { User, db, usersTable } from '@/database';
+import { comparePassword } from '@/shared/encryption';
 import { UserId } from '@/shared/entity-ids';
-import { Password, Email } from '@/shared/validation';
+import { Email, Password } from '@/shared/validation';
+import * as E from '@effect/data/Either';
 import { pipe } from '@effect/data/Function';
-import { compare } from 'bcryptjs';
 import { eq } from 'drizzle-orm';
 import { NextAuthOptions, getServerSession } from 'next-auth';
+import CredentialsProvider from 'next-auth/providers/credentials';
 import { redirect } from 'next/navigation';
 import { z } from 'zod';
-import CredentialsProvider from 'next-auth/providers/credentials';
-import * as E from '@effect/data/Either';
 
 export async function getActiveSessionServer() {
   const session = await getServerSession(authOptions);
@@ -60,7 +60,10 @@ export const authOptions: NextAuthOptions = {
           E.match(
             (_error) => null,
             async ({ passwordHash, ...user }) => {
-              const isSamePassword = await compare(password, passwordHash);
+              const isSamePassword = await comparePassword(
+                password,
+                passwordHash,
+              );
 
               if (!isSamePassword) {
                 return null;
@@ -92,7 +95,14 @@ export const authOptions: NextAuthOptions = {
       }
       return baseUrl;
     },
-    jwt({ token }) {
+    async jwt({ token, trigger, session }) {
+      if (trigger === 'update') {
+        const sessionUpdate = session as User;
+
+        token.name = sessionUpdate?.name ?? token.name;
+        token.email = sessionUpdate?.email ?? token.email;
+      }
+
       return token;
     },
     session({ session, token }) {

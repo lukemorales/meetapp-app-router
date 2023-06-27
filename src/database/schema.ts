@@ -1,9 +1,9 @@
-import { date, pgTable, text, uniqueIndex, varchar } from 'drizzle-orm/pg-core';
 import { InferModel, relations } from 'drizzle-orm';
+import { pgTable, text, uniqueIndex, varchar } from 'drizzle-orm/pg-core';
 
-import { entityId, timestamps } from './utils';
+import { Email } from '@/shared/validation';
 import { MeetupId, UserId } from '../shared/entity-ids';
-import { Email, HashedPassword } from '@/shared/validation';
+import { entityId, timestamps } from './utils';
 
 const userId = entityId('user');
 
