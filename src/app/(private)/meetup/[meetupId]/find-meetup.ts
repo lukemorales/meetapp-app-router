@@ -14,6 +14,7 @@ export const findMeetup = cache(async (meetupId: MeetupId, userId: UserId) => {
     ),
   });
 
+  // TODO: create not-found route
   if (!meetup) {
     notFound();
   }
