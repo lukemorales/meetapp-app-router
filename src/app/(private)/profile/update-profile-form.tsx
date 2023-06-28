@@ -1,8 +1,9 @@
 'use client';
 
-import { User } from '@/database';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
+
+import { type User } from '@/database';
 import * as E from '@effect/data/Either';
 import { pipe } from '@effect/data/Function';
 import { toast } from 'react-hot-toast';

@@ -1,16 +1,17 @@
 'use client';
 
-import { FormSubmitButton } from '@/components';
 import { signIn } from 'next-auth/react';
-import { FormEvent } from 'react';
+import { type FormEvent } from 'react';
+
+import { FormSubmitButton } from '@/components';
 
 export const AuthForm: React.FC<React.PropsWithChildren> = ({ children }) => {
-  function handleSubmit(e: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
 
     const formData = new FormData(e.currentTarget);
 
-    signIn('credentials', {
+    await signIn('credentials', {
       email: formData.get('email'),
       password: formData.get('password'),
     });

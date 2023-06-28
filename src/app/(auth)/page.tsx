@@ -4,7 +4,7 @@ import Link from 'next/link';
 
 import { AuthForm } from './auth-form';
 
-export default async function SignInPage({ params }: any) {
+export default async function SignInPage() {
   // somehow needed in the component body
   // for `getCsrfToken` to actually get the token value
   cookies();

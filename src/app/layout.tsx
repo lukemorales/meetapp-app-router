@@ -1,9 +1,10 @@
 import './globals.css';
-import { Inter } from 'next/font/google';
-import { Providers } from './providers';
-import { Metadata } from 'next';
 
-const inter = Inter({ subsets: ['latin'] });
+import { type Metadata } from 'next';
+
+import { Providers } from './providers';
+
+type RootLayoutProps = React.PropsWithChildren;
 
 export const metadata: Metadata = {
   title: {
@@ -13,12 +14,10 @@ export const metadata: Metadata = {
   description: 'Your next meetup is here',
 };
 
-export default async function RootLayout({
-  children,
-}: React.PropsWithChildren) {
+export default async function RootLayout({ children }: RootLayoutProps) {
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body>
         <Providers>{children}</Providers>
       </body>
     </html>

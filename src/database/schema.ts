@@ -1,9 +1,11 @@
-import { InferModel, relations } from 'drizzle-orm';
+import { type InferModel, relations } from 'drizzle-orm';
 import { pgTable, text, uniqueIndex, varchar } from 'drizzle-orm/pg-core';
+import { type EncryptedPassword, type Email } from '@/shared/validation';
 
-import { Email } from '@/shared/validation';
-import { MeetupId, UserId } from '../shared/entity-ids';
+import { type MeetupId, type UserId } from '../shared/entity-ids';
 import { entityId, timestamps } from './utils';
+
+// tables
 
 const userId = entityId('user');
 
@@ -15,7 +17,7 @@ export const usersTable = pgTable(
     email: varchar('email', { length: 256 }).notNull().$type<Email>(),
     passwordHash: varchar('password_hash', { length: 256 })
       .notNull()
-      .$type<HashedPassword>(),
+      .$type<EncryptedPassword>(),
     ...timestamps,
   },
   (table) => ({
@@ -25,10 +27,6 @@ export const usersTable = pgTable(
 
 export type DatabaseUser = InferModel<typeof usersTable>;
 export type User = Omit<DatabaseUser, 'passwordHash'>;
-
-export const usersRelations = relations(usersTable, ({ many }) => ({
-  meetups: many(meetupsTable),
-}));
 
 const meetupId = entityId('meetup');
 
@@ -48,11 +46,17 @@ export const meetupsTable = pgTable('meetups', {
   ...timestamps,
 });
 
+export type Meetup = InferModel<typeof meetupsTable>;
+
+// tables relationships
+
+export const usersRelations = relations(usersTable, ({ many }) => ({
+  meetups: many(meetupsTable),
+}));
+
 export const meetupsRelations = relations(meetupsTable, ({ one }) => ({
   organizer: one(usersTable, {
     fields: [meetupsTable.organizerId],
     references: [usersTable.id],
   }),
 }));
-
-export type Meetup = InferModel<typeof meetupsTable>;

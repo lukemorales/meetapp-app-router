@@ -1,6 +1,7 @@
-import { compare, hash } from 'bcryptjs';
+import * as bcrypt from 'bcryptjs';
 import { exhaustive } from 'exhaustive';
-import { EncryptedPassword, Password } from './validation';
+
+import { EncryptedPassword, type Password } from './validation';
 
 const ENCRYPTION_SALT_ROUNDS = exhaustive(process.env.NODE_ENV, {
   test: () => 1,
@@ -9,9 +10,11 @@ const ENCRYPTION_SALT_ROUNDS = exhaustive(process.env.NODE_ENV, {
 });
 
 export async function encryptPassword(password: Password) {
-  return EncryptedPassword.parse(await hash(password, ENCRYPTION_SALT_ROUNDS));
+  return EncryptedPassword.parse(
+    await bcrypt.hash(password, ENCRYPTION_SALT_ROUNDS),
+  );
 }
 
 export function comparePassword(password: Password, hash: EncryptedPassword) {
-  return compare(password, hash);
+  return bcrypt.compare(password, hash);
 }

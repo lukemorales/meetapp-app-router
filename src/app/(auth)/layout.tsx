@@ -1,7 +1,9 @@
 import { redirect } from 'next/navigation';
-import { AppLogo } from '../app-logo';
 import { getServerSession } from 'next-auth';
+
 import { authOptions } from '@/server';
+
+import { AppLogo } from '../app-logo';
 
 type AuthLayoutProps = React.PropsWithChildren;
 

@@ -1,4 +1,5 @@
 import { getActiveServerSession } from '@/server';
+
 import { Header } from './header';
 
 type PrivateLayoutProps = React.PropsWithChildren;

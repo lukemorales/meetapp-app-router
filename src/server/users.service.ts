@@ -1,12 +1,13 @@
-import { User, db, usersTable } from '@/database';
+import { notFound } from 'next/navigation';
+
+import { type User, db, usersTable } from '@/database';
 import { UserId } from '@/shared/entity-ids';
-import { EncryptedPassword, Password } from '@/shared/validation';
+import { EncryptedPassword, type Password } from '@/shared/validation';
 import { hash } from 'bcryptjs';
-import { InferModel, eq } from 'drizzle-orm';
+import { type InferModel, eq } from 'drizzle-orm';
 import { ulid } from 'ulid';
 import * as E from '@effect/data/Either';
 import { comparePassword, encryptPassword } from '@/shared/encryption';
-import { notFound } from 'next/navigation';
 
 type CreateUserOptions = Pick<
   InferModel<typeof usersTable, 'insert'>,

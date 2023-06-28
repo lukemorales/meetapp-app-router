@@ -1,13 +1,14 @@
-import { FormSubmitButton } from '@/components';
-
 import { redirect } from 'next/navigation';
+import { revalidatePath } from 'next/cache';
+import { type Metadata } from 'next';
+
+import { FormSubmitButton } from '@/components';
 import { MdAddCircleOutline } from 'react-icons/md';
 import { z } from 'zod';
 import { zfd } from 'zod-form-data';
-import { DatePicker } from '../date-picker';
-import { revalidatePath } from 'next/cache';
-import { Metadata } from 'next';
 import { getActiveServerSession, meetupsService } from '@/server';
+
+import { DatePicker } from '../date-picker';
 import { createDateFromDatePickerString } from '../create-date-from-string';
 
 export const metadata: Metadata = {

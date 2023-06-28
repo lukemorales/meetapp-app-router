@@ -1,17 +1,14 @@
+import { type Metadata } from 'next';
+
 import { FormSubmitButton } from '@/components';
-import { db, usersTable } from '@/database';
 import { getActiveServerSession, usersService } from '@/server';
-import { comparePassword, encryptPassword } from '@/shared/encryption';
 import { Email, Password } from '@/shared/validation';
-import { eq } from 'drizzle-orm';
-import { Metadata } from 'next';
-import { notFound } from 'next/navigation';
 import { z } from 'zod';
 import { zfd } from 'zod-form-data';
+
 import { PasswordInputs } from './password-inputs';
 import { SignOutButton } from './sign-out-button';
 import { UpdateProfileForm } from './update-profile-form';
-import * as E from '@effect/data/Either';
 
 export const metadata: Metadata = {
   title: 'My profile',

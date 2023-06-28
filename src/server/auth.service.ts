@@ -1,26 +1,17 @@
 import 'server-only';
 
-import { User, db, usersTable } from '@/database';
-import { comparePassword } from '@/shared/encryption';
-import { UserId } from '@/shared/entity-ids';
-import { Email, Password } from '@/shared/validation';
-import * as E from '@effect/data/Either';
-import { pipe } from '@effect/data/Function';
-import { eq } from 'drizzle-orm';
-import { NextAuthOptions, getServerSession } from 'next-auth';
+import { type NextAuthOptions, getServerSession } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import { redirect } from 'next/navigation';
+
+import { type User, db, usersTable } from '@/database';
+import { comparePassword } from '@/shared/encryption';
+import { type UserId } from '@/shared/entity-ids';
+import { Email, Password } from '@/shared/validation';
+import * as O from '@effect/data/Option';
+import { pipe } from '@effect/data/Function';
+import { eq } from 'drizzle-orm';
 import { z } from 'zod';
-
-export async function getActiveServerSession() {
-  const session = await getServerSession(authOptions);
-
-  if (!session) {
-    redirect('/');
-  }
-
-  return session;
-}
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -49,16 +40,16 @@ export const authOptions: NextAuthOptions = {
 
         const { email, password } = validation.data;
 
-        const user = await db.query.users
+        const maybeUser = await db.query.users
           .findFirst({
             where: eq(usersTable.email, email),
           })
-          .then(E.fromNullable(() => 'User not found' as const));
+          .then(O.fromNullable);
 
         return pipe(
-          user,
-          E.match(
-            (_error) => null,
+          maybeUser,
+          O.match(
+            async () => null,
             async ({ passwordHash, ...user }) => {
               const isSamePassword = await comparePassword(
                 password,
@@ -81,6 +72,7 @@ export const authOptions: NextAuthOptions = {
       if (url.startsWith('/')) {
         return `${baseUrl}${url}`;
       }
+
       const urlObject = new URL(url);
       if (urlObject.origin === baseUrl) {
         if (urlObject.pathname === '/') {
@@ -93,29 +85,44 @@ export const authOptions: NextAuthOptions = {
 
         return url;
       }
+
       return baseUrl;
     },
     async jwt({ token, trigger, session }) {
-      if (trigger === 'update') {
-        const sessionUpdate = session as User;
+      const mutatedToken = { ...token };
 
-        token.name = sessionUpdate?.name ?? token.name;
-        token.email = sessionUpdate?.email ?? token.email;
+      if (trigger === 'update') {
+        const sessionUpdate = session as Partial<User>;
+
+        mutatedToken.name = sessionUpdate.name ?? token.name;
+        mutatedToken.email = sessionUpdate.email ?? token.email;
       }
 
-      return token;
+      return mutatedToken;
     },
     session({ session, token }) {
-      session.user = {
+      const mutatedSession = { ...session };
+
+      mutatedSession.user = {
         id: (token.sub ?? session.user.id) as UserId,
         name: token.name ?? session.user.name,
         email: (token.email ?? session.user.email) as Email,
       };
 
-      return session;
+      return mutatedSession;
     },
   },
   pages: {
     signIn: '/',
   },
 };
+
+export async function getActiveServerSession() {
+  const session = await getServerSession(authOptions);
+
+  if (!session) {
+    redirect('/');
+  }
+
+  return session;
+}

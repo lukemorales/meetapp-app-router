@@ -1,4 +1,4 @@
-import { Meetup } from '@/database';
+import { type Meetup } from '@/database';
 import { isAfter, parseISO, format } from 'date-fns/fp';
 
 export function formatMeetup(meetup: Meetup) {

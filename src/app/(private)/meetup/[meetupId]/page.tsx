@@ -1,12 +1,11 @@
-import { MeetupId } from '@/shared/entity-ids';
-
 import Link from 'next/link';
+import { type Metadata } from 'next';
 
 import { getActiveServerSession } from '@/server';
-import { Metadata } from 'next';
-import { redirect } from 'next/navigation';
+import { type MeetupId } from '@/shared/entity-ids';
 import { MdDateRange, MdEdit, MdLocationOn } from 'react-icons/md';
 import nl2br from 'react-nl2br';
+
 import { findMeetup } from './find-meetup';
 
 type MeetupProps = {
@@ -28,10 +27,6 @@ export async function generateMetadata({
 export default async function Meetup({ params }: MeetupProps) {
   const session = await getActiveServerSession();
 
-  if (!session) {
-    redirect('/');
-  }
-
   const meetup = await findMeetup(params.meetupId, session.user.id);
 
   return (
@@ -41,7 +36,7 @@ export default async function Meetup({ params }: MeetupProps) {
           {meetup.title}
         </h2>
 
-        {meetup.organizerId === session?.user.id && !meetup.hasPast && (
+        {meetup.organizerId === session.user.id && !meetup.hasPast && (
           <nav className="flex">
             <Link
               className="rounded py-2 px-3 flex items-center font-bold text-white bg-[#4dbaf9] gap-1"

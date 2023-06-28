@@ -1,19 +1,20 @@
-import { FormSubmitButton } from '@/components';
-import { db, meetupsTable } from '@/database';
-import { getActiveServerSession, meetupsService } from '@/server';
-import { MeetupId } from '@/shared/entity-ids';
-import { parseISO } from 'date-fns';
-import { eq } from 'drizzle-orm';
-import { Metadata } from 'next';
+import { type Metadata } from 'next';
 import { revalidatePath } from 'next/cache';
 import { RedirectType } from 'next/dist/client/components/redirect';
 import { redirect } from 'next/navigation';
-import { MdDeleteForever, MdSave } from 'react-icons/md';
-import { DatePicker } from '../../date-picker';
-import { findMeetup } from '../find-meetup';
 
+import { FormSubmitButton } from '@/components';
+import { db, meetupsTable } from '@/database';
+import { getActiveServerSession, meetupsService } from '@/server';
+import { type MeetupId } from '@/shared/entity-ids';
+import { parseISO } from 'date-fns';
+import { eq } from 'drizzle-orm';
+import { MdDeleteForever, MdSave } from 'react-icons/md';
 import { z } from 'zod';
 import { zfd } from 'zod-form-data';
+
+import { DatePicker } from '../../date-picker';
+import { findMeetup } from '../find-meetup';
 import { createDateFromDatePickerString } from '../../create-date-from-string';
 
 type EditMeetupProps = {
@@ -49,13 +50,13 @@ export default async function EditMeetup({ params }: EditMeetupProps) {
 
     const { date, ...values } = schema.parse(formData);
 
-    const meetup = await meetupsService.updateMeetup(params.meetupId, {
+    const updatedMeetup = await meetupsService.updateMeetup(params.meetupId, {
       ...values,
       date: createDateFromDatePickerString(date).toISOString(),
     });
 
     revalidatePath('/dashboard');
-    redirect(`/meetup/${meetup.id}`, RedirectType.replace);
+    redirect(`/meetup/${updatedMeetup.id}`, RedirectType.replace);
   }
 
   async function cancelMeetup(_: FormData) {

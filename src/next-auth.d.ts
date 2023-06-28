@@ -1,4 +1,4 @@
-import { User as DatabaseUser } from './database';
+import { type User as DatabaseUser } from './database';
 
 type SessionUser = Pick<DatabaseUser, 'id' | 'name' | 'email'>;
 

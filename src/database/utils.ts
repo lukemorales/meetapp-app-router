@@ -20,25 +20,28 @@ import { customType, timestamp } from 'drizzle-orm/pg-core';
  * await db.query.users.findFirst()
  */
 export const formatDbSchema = <T extends object>(schema: T) => {
-  type FormattedSchemaKeys<T extends string> = {
-    [K in T]: K extends `${infer R}Table` ? R : K;
-  }[T];
+  type FormattedSchemaKeys<K extends string> = {
+    [P in K]: P extends `${infer R}Table` ? R : P;
+  }[K];
 
-  type Schema<T extends object> = {
-    [K in FormattedSchemaKeys<keyof T & string>]: `${K}Table` extends keyof T
-      ? T[`${K}Table`]
-      : K extends keyof T
-      ? T[K]
+  type Schema<S extends object> = {
+    [K in FormattedSchemaKeys<keyof S & string>]: `${K}Table` extends keyof S
+      ? S[`${K}Table`]
+      : K extends keyof S
+      ? S[K]
       : never;
   };
 
   return Object.keys(schema).reduce((acc, key) => {
     const value = schema[key as keyof typeof schema];
-    const formattedKey = key.endsWith('Table') ? key.slice(0, -5) : key;
+    const formattedKey = key.endsWith('Table')
+      ? key.slice(0, -'table'.length)
+      : key;
 
     acc[formattedKey as keyof typeof acc] = value;
 
     return acc;
+    // eslint-disable-next-line @typescript-eslint/prefer-reduce-type-parameter
   }, {} as Schema<typeof schema>);
 };
 

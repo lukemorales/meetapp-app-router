@@ -1,7 +1,8 @@
 'use client';
 
-import { addDays } from 'date-fns';
 import { useState } from 'react';
+
+import { addDays } from 'date-fns';
 import ReactDatePicker from 'react-datepicker';
 
 import 'react-datepicker/dist/react-datepicker.css';
@@ -22,19 +23,16 @@ export const DatePicker: React.FC<DatePickerProps> = ({
 
   return (
     <ReactDatePicker
+      showTimeSelect
       className="w-full rounded h-12 py-2 px-3 text-[#515366] bg-white"
       name={name}
       placeholderText={placeholder}
       selected={startDate}
       minDate={addDays(new Date(), 1)}
-      showTimeSelect
       timeFormat="HH:mm"
       dateFormat="dd/MM/yyyy - HH:mm"
       autoComplete="off"
-      onChange={(date) => {
-        console.log(date, typeof date);
-        setStartDate(date);
-      }}
+      onChange={setStartDate}
     />
   );
 };

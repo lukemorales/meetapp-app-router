@@ -1,11 +1,10 @@
 import Link from 'next/link';
+import { redirect } from 'next/navigation';
 
 import { FormSubmitButton } from '@/components';
-
 import { zfd } from 'zod-form-data';
 import { Email, Password } from '@/shared/validation';
 import { z } from 'zod';
-import { redirect } from 'next/navigation';
 import { usersService } from '@/server';
 
 export const dynamic = 'force-static';

@@ -1,7 +1,7 @@
 import { meetupsTable, db } from '@/database';
 import { MeetupId } from '@/shared/entity-ids';
 import { formatMeetup } from '@/shared/meetup';
-import { InferModel, eq } from 'drizzle-orm';
+import { type InferModel, eq } from 'drizzle-orm';
 import { ulid } from 'ulid';
 
 type CreateMeetupOptions = Omit<

@@ -1,9 +1,10 @@
 import 'server-only';
-import { db, meetupsTable } from '@/database';
-import { MeetupId, UserId } from '@/shared/entity-ids';
-import { and, eq } from 'drizzle-orm';
 import { notFound } from 'next/navigation';
 import { cache } from 'react';
+
+import { db, meetupsTable } from '@/database';
+import { type MeetupId, type UserId } from '@/shared/entity-ids';
+import { and, eq } from 'drizzle-orm';
 import { formatMeetup } from '@/shared/meetup';
 
 export const findMeetup = cache(async (meetupId: MeetupId, userId: UserId) => {
