@@ -1,6 +1,6 @@
 import { FormSubmitButton } from '@/components';
 import { db, meetupsTable } from '@/database';
-import { getActiveServerSession } from '@/server';
+import { getActiveServerSession, meetupsService } from '@/server';
 import { MeetupId } from '@/shared/entity-ids';
 import { parseISO } from 'date-fns';
 import { eq } from 'drizzle-orm';
@@ -11,7 +11,10 @@ import { redirect } from 'next/navigation';
 import { MdDeleteForever, MdSave } from 'react-icons/md';
 import { DatePicker } from '../../date-picker';
 import { findMeetup } from '../find-meetup';
-import toast from 'react-hot-toast';
+
+import { z } from 'zod';
+import { zfd } from 'zod-form-data';
+import { createDateFromDatePickerString } from '../../create-date-from-string';
 
 type EditMeetupProps = {
   params: { meetupId: MeetupId };
@@ -25,7 +28,7 @@ export async function generateMetadata({
   const meetup = await findMeetup(params.meetupId, session.user.id);
 
   return {
-    title: `Edit ${meetup.title}`,
+    title: `Edit "${meetup.title}"`,
   };
 }
 
@@ -34,11 +37,25 @@ export default async function EditMeetup({ params }: EditMeetupProps) {
 
   const meetup = await findMeetup(params.meetupId, session.user.id);
 
-  // TODO: implement meetup update
   async function update(formData: FormData) {
     'use server';
 
-    redirect(`/meetup/${meetup.id}`);
+    const schema = zfd.formData({
+      date: z.string(),
+      description: z.string().min(1),
+      title: z.string().min(1),
+      location: z.string().min(1),
+    });
+
+    const { date, ...values } = schema.parse(formData);
+
+    const meetup = await meetupsService.updateMeetup(params.meetupId, {
+      ...values,
+      date: createDateFromDatePickerString(date).toISOString(),
+    });
+
+    revalidatePath('/dashboard');
+    redirect(`/meetup/${meetup.id}`, RedirectType.replace);
   }
 
   async function cancelMeetup(_: FormData) {
@@ -46,7 +63,6 @@ export default async function EditMeetup({ params }: EditMeetupProps) {
 
     await db.delete(meetupsTable).where(eq(meetupsTable.id, params.meetupId));
 
-    toast.success('Meetup deleted');
     revalidatePath('/dashboard');
     redirect('/dashboard', RedirectType.replace);
   }

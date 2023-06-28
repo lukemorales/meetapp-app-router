@@ -1,7 +1,7 @@
 import { meetupsTable, db } from '@/database';
 import { MeetupId } from '@/shared/entity-ids';
 import { formatMeetup } from '@/shared/meetup';
-import { InferModel } from 'drizzle-orm';
+import { InferModel, eq } from 'drizzle-orm';
 import { ulid } from 'ulid';
 
 type CreateMeetupOptions = Omit<
@@ -16,6 +16,20 @@ export async function createMeetup(options: CreateMeetupOptions) {
       ...options,
       id: MeetupId.parse(ulid()),
     })
+    .returning()
+    .then(([meetup]) => formatMeetup(meetup));
+}
+
+type UpdateMeetupOptions = Omit<CreateMeetupOptions, 'organizerId'>;
+
+export async function updateMeetup(
+  meetupId: MeetupId,
+  options: UpdateMeetupOptions,
+) {
+  return db
+    .update(meetupsTable)
+    .set(options)
+    .where(eq(meetupsTable.id, meetupId))
     .returning()
     .then(([meetup]) => formatMeetup(meetup));
 }
