@@ -21,7 +21,7 @@ export default async function Dashboard() {
     .findMany({
       where: eq(meetupsTable.organizerId, session.user.id),
       limit: 10,
-      orderBy: meetupsTable.date,
+      orderBy: (table, { desc }) => [desc(table.date)],
     })
     .then(A.map(formatMeetup));
 
