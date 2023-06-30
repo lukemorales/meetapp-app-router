@@ -14,7 +14,7 @@ export const HeaderBackButton: React.FC = () => {
 
   return (
     <button
-      className="flex items-center bg-none ml-7 text-[#eee] gap-1"
+      className="ml-7 flex items-center gap-1 bg-none text-[#eee]"
       type="button"
       onClick={router.back}
     >

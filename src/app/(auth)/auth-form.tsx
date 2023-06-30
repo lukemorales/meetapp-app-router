@@ -19,12 +19,12 @@ export const AuthForm: React.FC<React.PropsWithChildren> = ({ children }) => {
 
   return (
     <form
-      className="flex flex-col mt-10 relative z-20 gap-3"
+      className="relative z-20 mt-10 flex flex-col gap-3"
       onSubmit={handleSubmit}
     >
       <input
         required
-        className="w-full rounded h-12 py-2 px-3 text-[#333] bg-[#3f2744]/10"
+        className="h-12 w-full rounded bg-[#3f2744]/10 px-3 py-2 text-[#333]"
         name="email"
         type="email"
         placeholder="Email"
@@ -32,7 +32,7 @@ export const AuthForm: React.FC<React.PropsWithChildren> = ({ children }) => {
       />
       <input
         required
-        className="w-full rounded h-12 py-2 px-3 text-[#333] bg-[#3f2744]/10"
+        className="h-12 w-full rounded bg-[#3f2744]/10 px-3 py-2 text-[#333]"
         name="password"
         type="password"
         placeholder="Password"

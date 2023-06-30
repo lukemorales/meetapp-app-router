@@ -41,30 +41,30 @@ export default async function CreateMeetup() {
   }
 
   return (
-    <div className="max-w-[60rem] w-full my-12 mx-auto px-7 flex flex-col">
+    <div className="mx-auto my-12 flex w-full max-w-[60rem] flex-col px-7">
       <form action={create} className="flex flex-col gap-3">
         <input
-          className="w-full rounded h-12 py-2 px-3 text-[#515366] bg-white"
+          className="h-12 w-full rounded bg-white px-3 py-2 text-[#515366]"
           type="text"
           name="title"
           placeholder="Event name"
         />
         <textarea
-          className="w-full rounded py-2 px-3 text-[#515366] bg-white resize-none h-[12.5rem]"
+          className="h-[12.5rem] w-full resize-none rounded bg-white px-3 py-2 text-[#515366]"
           name="description"
           placeholder="Description"
         />
 
         <DatePicker name="date" placeholder="Date" />
         <input
-          className="w-full rounded h-12 py-2 px-3 text-[#515366] bg-white"
+          className="h-12 w-full rounded bg-white px-3 py-2 text-[#515366]"
           type="text"
           name="location"
           placeholder="Location"
         />
 
         <FormSubmitButton>
-          <div className="flex items-center gap-1 justify-center self-end">
+          <div className="flex items-center justify-center gap-1 self-end">
             <MdAddCircleOutline size={20} color="#fff" />
             Create
           </div>

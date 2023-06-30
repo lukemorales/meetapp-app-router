@@ -48,11 +48,11 @@ export default async function Profile() {
   }
 
   return (
-    <div className="w-full max-w-[600px] my-12 mx-auto px-7 flex flex-col">
+    <div className="mx-auto my-12 flex w-full max-w-[600px] flex-col px-7">
       <UpdateProfileForm action={updateProfile}>
         <input
           required
-          className="w-full rounded h-12 py-2 px-3 text-[#515366] bg-white"
+          className="h-12 w-full rounded bg-white px-3 py-2 text-[#515366]"
           name="name"
           type="text"
           placeholder="Full name"
@@ -61,7 +61,7 @@ export default async function Profile() {
         />
         <input
           required
-          className="w-full rounded h-12 py-2 px-3 text-[#515366] bg-white"
+          className="h-12 w-full rounded bg-white px-3 py-2 text-[#515366]"
           name="email"
           type="email"
           placeholder="Email"
@@ -69,7 +69,7 @@ export default async function Profile() {
           defaultValue={user.email}
         />
 
-        <fieldset className="flex flex-col gap-3 mt-5">
+        <fieldset className="mt-5 flex flex-col gap-3">
           <PasswordInputs />
         </fieldset>
 

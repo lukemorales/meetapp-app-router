@@ -27,7 +27,7 @@ export default async function Dashboard() {
 
   return exhaustive(meetups.length === 0, {
     true: () => (
-      <aside className="text-center text-[#eee] flex justify-center items-center flex-1">
+      <aside className="flex flex-1 items-center justify-center text-center text-[#eee]">
         You have not created any meetups
       </aside>
     ),
@@ -38,19 +38,19 @@ export default async function Dashboard() {
             key={meetup.id}
             href={`/meetup/${meetup.id}`}
             className={clsx(
-              'flex justify-between items-center w-full p-5 rounded bg-black/10 text-white',
+              'flex w-full items-center justify-between rounded bg-black/10 p-5 text-white',
               { 'opacity-50': meetup.hasPast },
             )}
           >
             <h3>{meetup.title}</h3>
 
-            <div className="text-[#eee] ml-8 flex flex-col gap-2">
-              <p className="flex items-center m-0 gap-3 whitespace-nowrap">
+            <div className="ml-8 flex flex-col gap-2 text-[#eee]">
+              <p className="m-0 flex items-center gap-3 whitespace-nowrap">
                 <MdDateRange size={16} />
                 {meetup.formattedDate}
               </p>
 
-              <p className="flex items-center gap-3 m-0">
+              <p className="m-0 flex items-center gap-3">
                 <MdLocationOn size={16} />
                 {meetup.location}
               </p>

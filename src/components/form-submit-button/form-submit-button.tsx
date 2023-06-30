@@ -11,7 +11,7 @@ export const FormSubmitButton: React.FC<FormSubmitButtonProps> = ({
 
   return (
     <button
-      className="mt-3 h-12 bg-[#e5556e] font-bold text-white rounded disabled:opacity-80 disabled:cursor-progress"
+      className="mt-3 h-12 rounded bg-[#e5556e] font-bold text-white disabled:cursor-progress disabled:opacity-80"
       type="submit"
       disabled={form.pending}
     >

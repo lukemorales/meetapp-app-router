@@ -17,11 +17,11 @@ export default async function SignInPage() {
         defaultValue={await getCsrfToken()}
       />
 
-      <p className="mt-14 flex flex-col justify-between items-center cursor-default text-[#777] leading-4">
+      <p className="mt-14 flex cursor-default flex-col items-center justify-between leading-4 text-[#777]">
         Don’t have an account?
         <Link
           href="/sign-up"
-          className="inline-block py-2 px-5 text-[#e5556e] text-base font-bold"
+          className="inline-block px-5 py-2 text-base font-bold text-[#e5556e]"
         >
           Register now
         </Link>

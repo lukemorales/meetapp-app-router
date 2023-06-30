@@ -10,8 +10,8 @@ type HeaderProps = {
 };
 
 export const Header: React.FC<HeaderProps> = ({ profile }) => (
-  <header className="px-8 bg-black/30">
-    <div className="py-4 max-w-[56.25rem] mx-auto flex justify-between items-center">
+  <header className="bg-black/30 px-8">
+    <div className="mx-auto flex max-w-[56.25rem] items-center justify-between py-4">
       <nav className="flex items-center">
         <h1>
           <Link href="/dashboard">
@@ -24,7 +24,7 @@ export const Header: React.FC<HeaderProps> = ({ profile }) => (
 
       <section>
         <Link
-          className="flex items-center text-[#f5ebec] gap-4"
+          className="flex items-center gap-4 text-[#f5ebec]"
           href="/profile"
         >
           <Image

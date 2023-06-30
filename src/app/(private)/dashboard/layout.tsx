@@ -7,13 +7,13 @@ type DashboardLayoutProps = React.PropsWithChildren;
 export default function DashboardLayout({ children }: DashboardLayoutProps) {
   return (
     <>
-      <header className="w-full items-center justify-between mb-10 flex">
-        <h2 className="text-[#f94d6a] font-medium tracking-[0.5px] text-3xl">
+      <header className="mb-10 flex w-full items-center justify-between">
+        <h2 className="text-3xl font-medium tracking-[0.5px] text-[#f94d6a]">
           My meetups
         </h2>
 
         <Link
-          className="bg-[#f94d6a] rounded py-2 px-3 flex items-center gap-2 font-bold tracking-[0.5px] text-white"
+          className="flex items-center gap-2 rounded bg-[#f94d6a] px-3 py-2 font-bold tracking-[0.5px] text-white"
           href="/meetup/create"
         >
           <MdAddCircleOutline color="#fff" size={22} />

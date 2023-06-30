@@ -69,17 +69,17 @@ export default async function EditMeetup({ params }: EditMeetupProps) {
   }
 
   return (
-    <div className="w-full max-w-[60rem] my-12 mx-auto px-7 flex flex-col flex-1">
+    <div className="mx-auto my-12 flex w-full max-w-[60rem] flex-1 flex-col px-7">
       <form action={update} className="flex flex-col gap-3">
         <input
-          className="w-full rounded h-12 py-2 px-3 text-[#515366] bg-white"
+          className="h-12 w-full rounded bg-white px-3 py-2 text-[#515366]"
           type="text"
           name="title"
           placeholder="Event name"
           defaultValue={meetup.title}
         />
         <textarea
-          className="w-full rounded py-2 px-3 text-[#515366] bg-white resize-none h-[12.5rem]"
+          className="h-[12.5rem] w-full resize-none rounded bg-white px-3 py-2 text-[#515366]"
           name="description"
           placeholder="Description"
           defaultValue={meetup.description}
@@ -91,25 +91,25 @@ export default async function EditMeetup({ params }: EditMeetupProps) {
           initialValue={parseISO(meetup.date)}
         />
         <input
-          className="w-full rounded h-12 py-2 px-3 text-[#515366] bg-white"
+          className="h-12 w-full rounded bg-white px-3 py-2 text-[#515366]"
           type="text"
           name="location"
           placeholder="Location"
           defaultValue={meetup.location}
         />
 
-        <div className="flex justify-between items-center mt-3">
+        <div className="mt-3 flex items-center justify-between">
           <button
             formAction={cancelMeetup}
             type="submit"
-            className="flex items-center bg-none font-bold text-[#e65175] py-2 px-3 h-12 gap-2"
+            className="flex h-12 items-center gap-2 bg-none px-3 py-2 font-bold text-[#e65175]"
           >
             <MdDeleteForever size={20} color="#e65175" />
             Cancel meetup
           </button>
 
           <FormSubmitButton>
-            <div className="flex items-center gap-2 justify-center self-end py-2 px-3">
+            <div className="flex items-center justify-center gap-2 self-end px-3 py-2">
               <MdSave size={20} color="#fff" />
               Save
             </div>

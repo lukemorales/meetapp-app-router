@@ -10,7 +10,7 @@
     "db:migrate": "npx tsx -r dotenv-expand/config ./scripts/db-migrate.ts",
     "generate:migration": "drizzle-kit generate:pg"
   },
-  "prettier": "@lukemorales/prettier-config",
+  "prettier": "@lukemorales/prettier-config/with-tailwind",
   "eslintConfig": {
     "extends": [
       "lukemorales/react",
@@ -32,6 +32,7 @@
     "next": "13.4.8-canary.6",
     "next-auth": "^4.22.1",
     "postcss": "8.4.24",
+    "prettier-plugin-tailwindcss": "^0.3.0",
     "react": "18.2.0",
     "react-datepicker": "^4.14.1",
     "react-dom": "18.2.0",

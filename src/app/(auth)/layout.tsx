@@ -15,8 +15,8 @@ export default async function AuthLayout({ children }: AuthLayoutProps) {
   }
 
   return (
-    <div className="min-h-full flex p-8">
-      <main className="bg-white w-full max-w-[25rem] m-auto p-10 rounded text-center">
+    <div className="flex min-h-full p-8">
+      <main className="m-auto w-full max-w-[25rem] rounded bg-white p-10 text-center">
         <AppLogo />
 
         {children}

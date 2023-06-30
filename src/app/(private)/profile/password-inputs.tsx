@@ -24,7 +24,7 @@ export const PasswordInputs: React.FC = () => {
     <>
       <input
         required={!!fields['new-password']}
-        className="w-full rounded h-12 py-2 px-3 text-[#515366] bg-white"
+        className="h-12 w-full rounded bg-white px-3 py-2 text-[#515366]"
         name="password"
         type="password"
         placeholder="Current password"
@@ -34,7 +34,7 @@ export const PasswordInputs: React.FC = () => {
       />
 
       <input
-        className="w-full rounded h-12 py-2 px-3 text-[#515366] bg-white"
+        className="h-12 w-full rounded bg-white px-3 py-2 text-[#515366]"
         name="new-password"
         type="password"
         placeholder="New password"
@@ -44,7 +44,7 @@ export const PasswordInputs: React.FC = () => {
       />
       <input
         required={!!fields['new-password']}
-        className="w-full rounded h-12 py-2 px-3 text-[#515366] bg-white"
+        className="h-12 w-full rounded bg-white px-3 py-2 text-[#515366]"
         name="confirm-password"
         type="password"
         placeholder="Confirm password"
