@@ -1,9 +1,10 @@
 import * as bcrypt from 'bcryptjs';
 import { exhaustive } from 'exhaustive';
+import { ENV } from '@/env.mjs';
 
 import { EncryptedPassword, type Password } from './validation';
 
-const ENCRYPTION_SALT_ROUNDS = exhaustive(process.env.NODE_ENV, {
+const ENCRYPTION_SALT_ROUNDS = exhaustive(ENV.NODE_ENV, {
   test: () => 1,
   development: () => 6,
   production: () => 10,
