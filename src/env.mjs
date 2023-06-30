@@ -11,6 +11,7 @@ export const ENV = createEnv({
     PG_PASSWORD: z.string().min(1),
     NEXTAUTH_URL: z.string().min(1),
     NEXTAUTH_SECRET: z.string().min(1),
+    RESEND_API_KEY: z.string().min(1),
   },
   shared: {
     NODE_ENV: z.enum(['development', 'production', 'test']),

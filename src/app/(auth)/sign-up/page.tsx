@@ -5,7 +5,9 @@ import { FormSubmitButton } from '@/components';
 import { zfd } from 'zod-form-data';
 import { Email, Password } from '@/shared/validation';
 import { z } from 'zod';
-import { usersService } from '@/server';
+import { resend, usersService } from '@/server';
+
+import { WelcomeEmail } from './welcome-email';
 
 export const dynamic = 'force-static';
 
@@ -19,7 +21,17 @@ export default function SignUpPage() {
       password: Password,
     });
 
-    await usersService.createUser(schema.parse(formData));
+    const user = await usersService.createUser(schema.parse(formData));
+
+    await resend.emails
+      .send({
+        from: 'Meetapp <onboarding@meet.app>',
+        to: user.email,
+        subject: 'Welcome to Meetapp',
+        react: <WelcomeEmail name={user.name} />,
+      })
+      // eslint-disable-next-line no-console
+      .catch(console.log);
 
     redirect('/');
   }
