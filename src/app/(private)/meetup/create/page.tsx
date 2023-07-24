@@ -7,6 +7,8 @@ import { MdAddCircleOutline } from 'react-icons/md';
 import { z } from 'zod';
 import { zfd } from 'zod-form-data';
 import { getActiveServerSession, meetupsService } from '@/server';
+import { FX } from '@/shared/effect';
+import { pipe } from 'effect';
 
 import { DatePicker } from '../date-picker';
 import { createDateFromDatePickerString } from '../create-date-from-string';
@@ -16,28 +18,38 @@ export const metadata: Metadata = {
 };
 
 export default async function CreateMeetup() {
-  async function create(formData: FormData) {
+  function create(formData: FormData) {
     'use server';
 
-    const session = await getActiveServerSession();
+    return pipe(
+      getActiveServerSession(),
+      FX.flatMap(({ user }) => {
+        const schema = zfd.formData({
+          date: z.string(),
+          description: z.string().min(1),
+          title: z.string().min(1),
+          location: z.string().min(1),
+        });
 
-    const schema = zfd.formData({
-      date: z.string(),
-      description: z.string().min(1),
-      title: z.string().min(1),
-      location: z.string().min(1),
-    });
-
-    const { date, ...values } = schema.parse(formData);
-
-    const meetup = await meetupsService.createMeetup({
-      ...values,
-      date: createDateFromDatePickerString(date).toISOString(),
-      organizerId: session.user.id,
-    });
-
-    revalidatePath('/dashboard');
-    redirect(`/meetup/${meetup.id}`);
+        return pipe(
+          FX.try(() => schema.parse(formData)),
+          FX.flatMap(({ date, ...values }) =>
+            meetupsService.createMeetup({
+              ...values,
+              date: createDateFromDatePickerString(date).toISOString(),
+              organizerId: user.id,
+            }),
+          ),
+          FX.tap((meetup) =>
+            pipe(
+              FX.sync(() => revalidatePath('/dashboard')),
+              FX.flatMap(() => FX.sync(() => redirect(`/meetup/${meetup.id}`))),
+            ),
+          ),
+        );
+      }),
+      FX.runPromise,
+    );
   }
 
   return (

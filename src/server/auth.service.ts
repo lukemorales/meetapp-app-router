@@ -4,14 +4,15 @@ import { type NextAuthOptions, getServerSession } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import { redirect } from 'next/navigation';
 
-import { type User, db, usersTable } from '@/database';
+import { type User, db, usersTable, type DatabaseUser } from '@/database';
 import { comparePassword } from '@/shared/encryption';
 import { type UserId } from '@/shared/entity-ids';
 import { Email, Password } from '@/shared/validation';
-import * as O from '@effect/data/Option';
-import { pipe } from '@effect/data/Function';
 import { eq } from 'drizzle-orm';
 import { z } from 'zod';
+import { identity, pipe } from 'effect';
+import { O, FX } from '@/shared/effect';
+import { constNull } from 'effect/Function';
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -29,40 +30,39 @@ export const authOptions: NextAuthOptions = {
           type: 'password',
         },
       },
-      async authorize(credentials, _req) {
+      authorize(credentials, _req) {
+        type Credentials = z.infer<typeof schema>;
         const schema = z.object({ email: Email, password: Password });
 
-        const validation = schema.safeParse(credentials);
-
-        if (!validation.success) {
-          return null;
+        function verifyUserCredentials(password: Password) {
+          return ({ passwordHash, ...user }: DatabaseUser) =>
+            pipe(
+              comparePassword(password, passwordHash),
+              FX.if({
+                onFalse: FX.fail('Invalid password' as const),
+                onTrue: FX.succeed(user),
+              }),
+            );
         }
 
-        const { email, password } = validation.data;
-
-        const maybeUser = await db.query.users
-          .findFirst({
-            where: eq(usersTable.email, email),
-          })
-          .then(O.fromNullable);
+        function authenticateUser({ email, password }: Credentials) {
+          return pipe(
+            FX.tryPromise(() =>
+              db.query.users.findFirst({ where: eq(usersTable.email, email) }),
+            ),
+            FX.flatMap(O.fromNullable),
+            FX.flatMap(verifyUserCredentials(password)),
+          );
+        }
 
         return pipe(
-          maybeUser,
-          O.match(
-            async () => null,
-            async ({ passwordHash, ...user }) => {
-              const isSamePassword = await comparePassword(
-                password,
-                passwordHash,
-              );
-
-              if (!isSamePassword) {
-                return null;
-              }
-
-              return user;
-            },
-          ),
+          FX.try({
+            try: () => schema.parse(credentials),
+            catch: () => 'Invalid Credentials' as const,
+          }),
+          FX.flatMap(authenticateUser),
+          FX.match({ onFailure: constNull, onSuccess: identity }),
+          FX.runPromise,
         );
       },
     }),
@@ -117,12 +117,13 @@ export const authOptions: NextAuthOptions = {
   },
 };
 
-export async function getActiveServerSession() {
-  const session = await getServerSession(authOptions);
-
-  if (!session) {
-    redirect('/');
-  }
-
-  return session;
+export function getActiveServerSession() {
+  return pipe(
+    FX.promise(() => getServerSession(authOptions)),
+    FX.flatMap(O.fromNullable),
+    FX.match({
+      onFailure: () => redirect('/'),
+      onSuccess: identity,
+    }),
+  );
 }

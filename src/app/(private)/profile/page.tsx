@@ -5,6 +5,7 @@ import { getActiveServerSession, usersService } from '@/server';
 import { Email, Password } from '@/shared/validation';
 import { z } from 'zod';
 import { zfd } from 'zod-form-data';
+import { FX } from '@/shared/effect';
 
 import { PasswordInputs } from './password-inputs';
 import { SignOutButton } from './sign-out-button';
@@ -15,7 +16,7 @@ export const metadata: Metadata = {
 };
 
 export default async function Profile() {
-  const { user } = await getActiveServerSession();
+  const { user } = await getActiveServerSession().pipe(FX.runPromise);
 
   async function updateProfile(formData: FormData) {
     'use server';
@@ -44,7 +45,10 @@ export default async function Profile() {
         newPassword: passwords['new-password'] || undefined,
       }));
 
-    return usersService.updateUser(user.id, schema.parse(formData));
+    return usersService
+      .updateUser(user.id, schema.parse(formData))
+      .pipe(FX.either)
+      .pipe(FX.runPromise);
   }
 
   return (

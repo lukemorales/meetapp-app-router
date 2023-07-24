@@ -50,6 +50,9 @@ dependencies:
   drizzle-orm:
     specifier: ^0.27.2
     version: 0.27.2(@neondatabase/serverless@0.5.6)
+  effect:
+    specifier: 2.0.0-next.19
+    version: 2.0.0-next.19
   exhaustive:
     specifier: ^1.1.1
     version: 1.1.1
@@ -427,6 +430,16 @@ packages:
   /@drizzle-team/studio@0.0.5:
     resolution: {integrity: sha512-ps5qF0tMxWRVu+V5gvCRrQNqlY92aTnIKdq27gm9LZMSdaKYZt6AVvSK1dlUMzs6Rt0Jm80b+eWct6xShBKhIw==}
     dev: true
+
+  /@effect/data@0.16.1:
+    resolution: {integrity: sha512-rIoLk+5xY1lakbzd7k5xbuPvfiR+BSQSrOyxX5Fo5oXWt1a29k31K/0Cq+9NtwqsAE7aNMlQtw6Z1d0Sxw1i9Q==}
+    dev: false
+
+  /@effect/io@0.35.2:
+    resolution: {integrity: sha512-+F9A5785QmjK8OOO5d5SDHcZjNwpp0D8nAf7PlGSXPBFxeex2S5qYhhlUbE1zBQeTZoDwp40UIIMtgTb8yFOTw==}
+    dependencies:
+      '@effect/data': 0.16.1
+    dev: false
 
   /@emotion/is-prop-valid@1.2.1:
     resolution: {integrity: sha512-61Mf7Ufx4aDxx1xlDeOm8aFFigGHE4z+0sKCa+IHCeZKiyP9RLD0Mmx7m8b9/Cf37f7NAvQOOJAbQQGVr5uERw==}
@@ -2229,6 +2242,13 @@ packages:
       commander: 10.0.1
       minimatch: 9.0.1
       semver: 7.5.4
+    dev: false
+
+  /effect@2.0.0-next.19:
+    resolution: {integrity: sha512-Zz6mnnu1xNWPzGs27r0tV7Tvruio5BYEgzChxqULJS/M35MRS02vC8lEURnvqNoAAEbViOUyjC5W9AGQ3fJ6LQ==}
+    dependencies:
+      '@effect/data': 0.16.1
+      '@effect/io': 0.35.2
     dev: false
 
   /electron-to-chromium@1.4.440:

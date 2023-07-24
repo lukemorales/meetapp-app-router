@@ -1,13 +1,11 @@
-import { notFound } from 'next/navigation';
-
-import { type User, db, usersTable } from '@/database';
-import { UserId } from '@/shared/entity-ids';
-import { EncryptedPassword, type Password } from '@/shared/validation';
-import { hash } from 'bcryptjs';
-import { type InferModel, eq } from 'drizzle-orm';
-import { ulid } from 'ulid';
-import * as E from '@effect/data/Either';
+import { db, usersTable } from '@/database';
+import { A, O, FX } from '@/shared/effect';
 import { comparePassword, encryptPassword } from '@/shared/encryption';
+import { UserId } from '@/shared/entity-ids';
+import { type Password } from '@/shared/validation';
+import { eq, type InferModel } from 'drizzle-orm';
+import { pipe } from 'effect';
+import { ulid } from 'ulid';
 
 type CreateUserOptions = Pick<
   InferModel<typeof usersTable, 'insert'>,
@@ -16,24 +14,28 @@ type CreateUserOptions = Pick<
   password: Password;
 };
 
-export async function createUser(options: CreateUserOptions): Promise<User> {
+export function createUser(options: CreateUserOptions) {
   const { password, ...values } = options;
 
-  return db
-    .insert(usersTable)
-    .values({
-      ...values,
-      id: UserId.parse(ulid()),
-      passwordHash: EncryptedPassword.parse(await hash(password, 10)),
-    })
-    .returning({
-      id: usersTable.id,
-      name: usersTable.name,
-      email: usersTable.email,
-      updatedAt: usersTable.updatedAt,
-      createdAt: usersTable.createdAt,
-    })
-    .then(([user]) => user);
+  return pipe(
+    FX.promise(async () =>
+      db
+        .insert(usersTable)
+        .values({
+          ...values,
+          id: UserId.parse(ulid()),
+          passwordHash: await encryptPassword(password).pipe(FX.runPromise),
+        })
+        .returning({
+          id: usersTable.id,
+          name: usersTable.name,
+          email: usersTable.email,
+          updatedAt: usersTable.updatedAt,
+          createdAt: usersTable.createdAt,
+        }),
+    ),
+    FX.flatMap(A.head),
+  );
 }
 
 type UpdateUserOptions = Omit<CreateUserOptions, 'password'> & {
@@ -41,57 +43,111 @@ type UpdateUserOptions = Omit<CreateUserOptions, 'password'> & {
   newPassword?: Password;
 };
 
-export async function updateUser(
-  userId: UserId,
-  options: UpdateUserOptions,
-): Promise<E.Either<string, User>> {
-  const databaseUser = await db.query.users.findFirst({
-    where: eq(usersTable.id, userId),
-  });
+export function updateUser(userId: UserId, options: UpdateUserOptions) {
+  return pipe(
+    FX.tryPromise(() =>
+      db.query.users.findFirst({ where: eq(usersTable.id, userId) }),
+    ),
+    FX.flatMap(O.fromNullable),
+    FX.flatMap((databaseUser) => {
+      const { password, newPassword, ...values } = options;
 
-  if (!databaseUser) {
-    notFound();
-  }
+      if (password && newPassword) {
+        return pipe(
+          comparePassword(password, databaseUser.passwordHash),
+          FX.if({
+            onFalse: FX.fail('Invalid password' as const),
+            onTrue: pipe(
+              FX.tryPromise(async () =>
+                db
+                  .update(usersTable)
+                  .set({
+                    ...values,
+                    passwordHash: await encryptPassword(password).pipe(
+                      FX.runPromise,
+                    ),
+                  })
+                  .where(eq(usersTable.id, userId))
+                  .returning({
+                    id: usersTable.id,
+                    name: usersTable.name,
+                    email: usersTable.email,
+                    updatedAt: usersTable.updatedAt,
+                    createdAt: usersTable.createdAt,
+                  }),
+              ),
+            ),
+          }),
+          FX.flatMap(A.head),
+        );
+      }
 
-  const { password, newPassword, ...values } = options;
+      return pipe(
+        FX.tryPromise(() =>
+          db
+            .update(usersTable)
+            .set(values)
+            .where(eq(usersTable.id, userId))
+            .returning({
+              id: usersTable.id,
+              name: usersTable.name,
+              email: usersTable.email,
+              updatedAt: usersTable.updatedAt,
+              createdAt: usersTable.createdAt,
+            }),
+        ),
+        FX.flatMap(A.head),
+      );
+    }),
+  );
 
-  if (password && newPassword) {
-    const isSamePassword = await comparePassword(
-      password,
-      databaseUser.passwordHash,
-    );
+  // const databaseUser = await db.query.users.findFirst({
+  //   where: eq(usersTable.id, userId),
+  // });
 
-    if (!isSamePassword) {
-      return E.left('Invalid password');
-    }
+  // if (!databaseUser) {
+  //   notFound();
+  // }
 
-    return db
-      .update(usersTable)
-      .set({
-        ...values,
-        passwordHash: await encryptPassword(password),
-      })
-      .where(eq(usersTable.id, userId))
-      .returning({
-        id: usersTable.id,
-        name: usersTable.name,
-        email: usersTable.email,
-        updatedAt: usersTable.updatedAt,
-        createdAt: usersTable.createdAt,
-      })
-      .then(([user]) => E.right(user));
-  }
+  // const { password, newPassword, ...values } = options;
 
-  return db
-    .update(usersTable)
-    .set(values)
-    .where(eq(usersTable.id, userId))
-    .returning({
-      id: usersTable.id,
-      name: usersTable.name,
-      email: usersTable.email,
-      updatedAt: usersTable.updatedAt,
-      createdAt: usersTable.createdAt,
-    })
-    .then(([user]) => E.right(user));
+  // if (password && newPassword) {
+  //   const isSamePassword = await comparePassword(
+  //     password,
+  //     databaseUser.passwordHash,
+  //   );
+
+  //   if (!isSamePassword) {
+  //     return E.left('Invalid password');
+  //   }
+
+  //   return db
+  //     .update(usersTable)
+  //     .set({
+  //       ...values,
+  //       passwordHash: await encryptPassword(password),
+  //     })
+  //     .where(eq(usersTable.id, userId))
+  //     .returning({
+  //       id: usersTable.id,
+  //       name: usersTable.name,
+  //       email: usersTable.email,
+  //       updatedAt: usersTable.updatedAt,
+  //       createdAt: usersTable.createdAt,
+  //     })
+  //     .then(([user]) => E.right(user));
+  // }
+
+  // return db
+  //   .update(usersTable)
+  //   .set(values)
+  //   .where(eq(usersTable.id, userId))
+  //   .returning({
+  //     id: usersTable.id,
+  //     name: usersTable.name,
+  //     email: usersTable.email,
+  //     updatedAt: usersTable.updatedAt,
+  //     createdAt: usersTable.createdAt,
+  //   })
+  //   .then(([user]) => E.right(user));
 }
