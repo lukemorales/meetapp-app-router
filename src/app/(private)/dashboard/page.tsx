@@ -7,8 +7,8 @@ import { formatMeetup } from '@/shared/meetup';
 import { clsx } from 'clsx';
 import { eq } from 'drizzle-orm';
 import { exhaustive } from 'exhaustive';
+import { A } from 'funkcia';
 import { MdDateRange, MdLocationOn } from 'react-icons/md';
-import * as A from '@effect/data/ReadonlyArray';
 
 export const metadata: Metadata = {
   title: 'Dashboard',

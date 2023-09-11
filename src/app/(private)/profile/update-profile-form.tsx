@@ -4,8 +4,7 @@ import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 
 import { type User } from '@/database';
-import * as E from '@effect/data/Either';
-import { pipe } from '@effect/data/Function';
+import { E } from 'funkcia';
 import { toast } from 'react-hot-toast';
 
 type UpdateProfileFormProps = React.PropsWithChildren<{
@@ -22,8 +21,7 @@ export const UpdateProfileForm: React.FC<UpdateProfileFormProps> = ({
   async function updateProfile(formData: FormData) {
     const updateResult = await action(formData);
 
-    return pipe(
-      updateResult,
+    return updateResult.pipe(
       E.match(
         async (message) => {
           toast.error(message);

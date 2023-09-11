@@ -1,16 +1,15 @@
 import 'server-only';
 
-import { type NextAuthOptions, getServerSession } from 'next-auth';
+import { getServerSession, type NextAuthOptions } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import { redirect } from 'next/navigation';
 
-import { type User, db, usersTable } from '@/database';
+import { db, usersTable, type User } from '@/database';
 import { comparePassword } from '@/shared/encryption';
 import { type UserId } from '@/shared/entity-ids';
 import { Email, Password } from '@/shared/validation';
-import * as O from '@effect/data/Option';
-import { pipe } from '@effect/data/Function';
 import { eq } from 'drizzle-orm';
+import { constNull, O } from 'funkcia';
 import { z } from 'zod';
 
 export const authOptions: NextAuthOptions = {
@@ -46,23 +45,19 @@ export const authOptions: NextAuthOptions = {
           })
           .then(O.fromNullable);
 
-        return pipe(
-          maybeUser,
-          O.match(
-            async () => null,
-            async ({ passwordHash, ...user }) => {
-              const isSamePassword = await comparePassword(
-                password,
-                passwordHash,
-              );
+        return maybeUser.pipe(
+          O.match(constNull, async ({ passwordHash, ...user }) => {
+            const isSamePassword = await comparePassword(
+              password,
+              passwordHash,
+            );
 
-              if (!isSamePassword) {
-                return null;
-              }
+            if (!isSamePassword) {
+              return null;
+            }
 
-              return user;
-            },
-          ),
+            return user;
+          }),
         );
       },
     }),
