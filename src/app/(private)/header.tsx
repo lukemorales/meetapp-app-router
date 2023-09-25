@@ -1,6 +1,6 @@
-import Link from 'next/link';
-import Image from 'next/image';
 import { type Session } from 'next-auth';
+import Image from 'next/image';
+import Link from 'next/link';
 
 import { AppLogo } from '../app-logo';
 import { HeaderBackButton } from './header-back-button';

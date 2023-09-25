@@ -6,7 +6,7 @@ import { UserId } from '@/shared/entity-ids';
 import { EncryptedPassword, type Password } from '@/shared/validation';
 import { hash } from 'bcryptjs';
 import { eq, type InferModel } from 'drizzle-orm';
-import { E } from 'funkcia';
+import { R, type AsyncResult } from 'funkcia';
 import { ulid } from 'ulid';
 
 type CreateUserOptions = Pick<
@@ -44,7 +44,7 @@ type UpdateUserOptions = Omit<CreateUserOptions, 'password'> & {
 export async function updateUser(
   userId: UserId,
   options: UpdateUserOptions,
-): Promise<E.Either<string, User>> {
+): AsyncResult<string, User> {
   const databaseUser = await db.query.users.findFirst({
     where: eq(usersTable.id, userId),
   });
@@ -62,7 +62,7 @@ export async function updateUser(
     );
 
     if (!isSamePassword) {
-      return E.left('Invalid password');
+      return R.error('Invalid password');
     }
 
     return db
@@ -79,7 +79,7 @@ export async function updateUser(
         updatedAt: usersTable.updatedAt,
         createdAt: usersTable.createdAt,
       })
-      .then(([user]) => E.right(user));
+      .then(([user]) => R.ok(user));
   }
 
   return db
@@ -93,5 +93,5 @@ export async function updateUser(
       updatedAt: usersTable.updatedAt,
       createdAt: usersTable.createdAt,
     })
-    .then(([user]) => E.right(user));
+    .then(([user]) => R.ok(user));
 }

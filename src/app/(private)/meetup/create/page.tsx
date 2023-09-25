@@ -1,15 +1,15 @@
-import { redirect } from 'next/navigation';
-import { revalidatePath } from 'next/cache';
 import { type Metadata } from 'next';
+import { revalidatePath } from 'next/cache';
+import { redirect } from 'next/navigation';
 
 import { FormSubmitButton } from '@/components';
+import { getActiveServerSession, meetupsService } from '@/server';
 import { MdAddCircleOutline } from 'react-icons/md';
 import { z } from 'zod';
 import { zfd } from 'zod-form-data';
-import { getActiveServerSession, meetupsService } from '@/server';
 
-import { DatePicker } from '../date-picker';
 import { createDateFromDatePickerString } from '../create-date-from-string';
+import { DatePicker } from '../date-picker';
 
 export const metadata: Metadata = {
   title: 'Create Meetup',

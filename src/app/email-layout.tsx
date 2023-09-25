@@ -1,7 +1,7 @@
-import { Html } from '@react-email/html';
 import { Body } from '@react-email/body';
 import { Container } from '@react-email/container';
 import { Head } from '@react-email/head';
+import { Html } from '@react-email/html';
 import { Tailwind } from '@react-email/tailwind';
 
 export const EmailLayout: React.FC<React.PropsWithChildren> = ({
